@@ -1,6 +1,7 @@
 ﻿using AdventOfCode.Utility;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace AdventOfCode.Year2018
 {
     class Solver2018_1_2
