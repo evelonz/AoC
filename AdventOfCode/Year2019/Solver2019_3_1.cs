@@ -6,144 +6,102 @@ namespace AdventOfCode.Year2019
 {
     class Solver2019_3_1
     {
+
+        private bool IsNegDir(char d) => d == 'L' || d == 'D';
+        private bool IsVertical(char d) => d == 'U' || d == 'D';
+
+        private (char dir, int dist, int dx, int dy) GetDelta(string wire)
+        {
+            char dir = wire[0];
+            int dist = int.Parse(wire.Substring(1));
+            int dx = dir == 'L' ? -dist : dir == 'R' ? dist : 0;
+            int dy = dir == 'D' ? -dist : dir == 'U' ? dist : 0;
+            return (dir, dist, dx, dy);
+        }
+
         public string Solve(IInputResolver input)
         {
             var wires = input.AsEnumerable();
             var wireOne = wires.First();
             var wireTwo = wires.Last();
-            var vLines = new List<((int, int), (int, int))>(1000);
-            var hLines = new List<((int, int), (int, int))>(1000);
-            var intersections = new List<(int, int)>(100);
+            var vLines = new List<((int x, int y) start, (int x, int y) end)>(1000);
+            var hLines = new List<((int x, int y) start, (int x, int y) end)>(1000);
+            var intersections = new List<(int x, int y)>(100);
 
             // Map wire 1
-            var pos = (0, 0); // x, y
+            var pos = (x: 0, y: 0);
             foreach (var wire in wireOne.Split(','))
             {
-                char dir = wire[0];
-                int x = 0;
-                int y = 0;
-                (int, int) npos;
-                switch(wire[0])
-                {
-                    case 'L':
-                        x = -1 * int.Parse(wire.Substring(1));
-                        npos = (pos.Item1 + x, pos.Item2);
-                        hLines.Add((npos, pos));
-                        pos = npos;
-                        break;
-                    case 'R':
-                        x = int.Parse(wire.Substring(1));
-                        npos = (pos.Item1 + x, pos.Item2);
-                        hLines.Add((pos, npos));
-                        pos = npos;
-                        break;
-                    case 'U':
-                        y = int.Parse(wire.Substring(1));
-                        npos = (pos.Item1, pos.Item2 + y);
-                        vLines.Add((pos, npos));
-                        pos = npos;
-                        break;
-                    case 'D':
-                        y = -1 * int.Parse(wire.Substring(1));
-                        npos = (pos.Item1, pos.Item2 + y);
-                        vLines.Add((npos, pos));
-                        pos = npos;
-                        break;
-                }
-
+                var (dir, dist, dx, dy) = GetDelta(wire);
+                var npos = (pos.x + dx, pos.y + dy);
+                var newLine = IsNegDir(dir) ? (npos, pos) : (pos, npos);
+                var lineCollection = IsVertical(dir) ? vLines : hLines;
+                lineCollection.Add(newLine);
+                pos = npos;
             }
 
             // Map wire 2
             pos = (0, 0); // x, y
             foreach (var wire in wireTwo.Split(','))
             {
-                int x = 0;
-                int y = 0;
-                (int, int) npos;
-                IEnumerable<(int, int)> sections;
+                var (dir, dist, dx, dy) = GetDelta(wire);
+                var npos = (x: pos.x + dx, y: pos.y + dy);
+                var sections = Enumerable.Empty<(int, int)>();
+
                 switch (wire[0])
                 {
                     case 'L':
-                        x = -1 * int.Parse(wire.Substring(1));
-                        npos = (pos.Item1 + x, pos.Item2);
-
                         // Check for intersect.
                         // If V line x is between new line x0 and x1
-                        // And new line y is between H line y0 and y1.
+                        // And new line y is between V line y0 and y1.
                         sections = vLines.Where(c =>
-                            c.Item1.Item1 > npos.Item1 &&
-                            c.Item1.Item1 < pos.Item1
+                            c.start.x > npos.x &&
+                            c.start.x < pos.x
                             &&
-                            pos.Item2 > c.Item1.Item2 &&
-                            pos.Item2 < c.Item2.Item2
-                        ).Select(s => (s.Item1.Item1, pos.Item2));
-
-                        intersections.AddRange(sections);
-                        pos = npos;
+                            pos.y > c.start.y &&
+                            pos.y < c.end.y
+                        ).Select(s => (s.start.x, pos.y));
                         break;
                     case 'R':
-                        x = int.Parse(wire.Substring(1));
-                        npos = (pos.Item1 + x, pos.Item2);
-
                         sections = vLines.Where(c =>
-                            c.Item1.Item1 > pos.Item1 &&
-                            c.Item1.Item1 < npos.Item1
+                            c.start.x > pos.x &&
+                            c.start.x < npos.x
                             &&
-                            pos.Item2 > c.Item1.Item2 &&
-                            pos.Item2 < c.Item2.Item2
-                        ).Select(s => (s.Item1.Item1, pos.Item2));
-
-                        intersections.AddRange(sections);
-                        pos = npos;
+                            pos.y > c.start.y &&
+                            pos.y < c.end.y
+                        ).Select(s => (s.start.x, pos.y));
                         break;
                     case 'U':
-                        y = int.Parse(wire.Substring(1));
-                        npos = (pos.Item1, pos.Item2 + y);
-
                         // Check for intersect.
                         // If H line y is between new line y0 and y1
                         // And new line x is between H line x0 and x1.
                         sections = hLines.Where(c =>
-                            c.Item1.Item2 > pos.Item2 &&
-                            c.Item1.Item2 < npos.Item2
+                            c.start.y > pos.y &&
+                            c.start.y < npos.y
                             &&
-                            pos.Item1 > c.Item1.Item1 &&
-                            pos.Item1 < c.Item2.Item1
-                        ).Select(s => (pos.Item1, s.Item1.Item2));
-
-                        intersections.AddRange(sections);
-                        pos = npos;
+                            pos.x > c.start.x &&
+                            pos.x < c.end.x
+                        ).Select(s => (pos.x, s.start.y));
                         break;
                     case 'D':
-                        y = -1 * int.Parse(wire.Substring(1));
-                        npos = (pos.Item1, pos.Item2 + y);
-
                         sections = hLines.Where(c =>
-                            c.Item1.Item2 > npos.Item2 &&
-                            c.Item1.Item2 < pos.Item2
+                            c.start.y > npos.y &&
+                            c.start.y < pos.y
                             &&
-                            pos.Item1 > c.Item1.Item1 &&
-                            pos.Item1 < c.Item2.Item1
-                        ).Select(s => (pos.Item1, s.Item1.Item2));
-
-                        intersections.AddRange(sections);
-                        pos = npos;
+                            pos.x > c.start.x &&
+                            pos.x < c.end.x
+                        ).Select(s => (pos.x, s.start.y));
                         break;
                 }
-
+                intersections.AddRange(sections);
+                pos = npos;
             }
 
-            int min = int.MaxValue;
-            foreach (var item in intersections)
-            {
-                System.Console.WriteLine($"{item.Item1}, {item.Item2}");
-                var dist = System.Math.Abs(item.Item1) 
-                    + System.Math.Abs(item.Item2);
-                if (dist < min)
-                    min = dist;
-            }
+            var minManhattanIntersection = intersections
+                .Select(i => System.Math.Abs(i.x) + System.Math.Abs(i.y))
+                .Min();
 
-            return min.ToString();
+            return minManhattanIntersection.ToString();
         }
     }
 }
