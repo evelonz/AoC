@@ -18,6 +18,9 @@
     <None Update="Year2019\AoCSource\1-1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Year2019\AoCSource\4-1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Year2019\AoCSource\3-1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
