@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Utility;
+using AdventOfCode.Year2019;
 using System;
 
 namespace AdventOfCode
@@ -7,8 +8,7 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            var a = new Year2019.Solver2019_4_1();
-            var b = a.Solve(new FileInputResolver(2019, 4, 1));
+            var b = Solver2019_5_2.Solve(new FileInputResolver(2019, 5, 1));
             Console.WriteLine(b);
         }
     }
