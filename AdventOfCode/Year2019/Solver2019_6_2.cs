@@ -57,8 +57,5 @@ namespace AdventOfCode.Year2019
 
             return orbits.ToString();
         }
-
-
-
     }
 }

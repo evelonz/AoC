@@ -19,43 +19,25 @@
     <None Update="Year2018\AoCSource\1-2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Year2018\AoCSource\1-1.txt">
+    <None Update="Year2018\AoCSource\1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Year2019\AoCSource\6-1.txt">
+    <None Update="Year2019\AoCSource\6.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Year2019\AoCSource\5-3.txt">
+    <None Update="Year2019\AoCSource\2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Year2019\AoCSource\5-2.txt">
+    <None Update="Year2019\AoCSource\1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Year2019\AoCSource\1-5.txt">
+    <None Update="Year2019\AoCSource\5.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Year2019\AoCSource\1-4.txt">
+    <None Update="Year2019\AoCSource\4.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Year2019\AoCSource\1-3.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Year2019\AoCSource\1-2.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Year2019\AoCSource\2-1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Year2019\AoCSource\1-1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Year2019\AoCSource\5-1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Year2019\AoCSource\4-1.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Year2019\AoCSource\3-1.txt">
+    <None Update="Year2019\AoCSource\3.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

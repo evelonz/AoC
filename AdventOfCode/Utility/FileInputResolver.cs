@@ -7,13 +7,11 @@ namespace AdventOfCode.Utility
     {
         private int _year;
         private int _day;
-        private int _question;
 
-        public FileInputResolver(int year, int day, int question)
+        public FileInputResolver(int year, int day)
         {
             _year = year;
             _day = day;
-            _question = question;
         }
 
         public IEnumerable<string> AsEnumerable()
@@ -28,11 +26,11 @@ namespace AdventOfCode.Utility
             }
         }
 
-        public StreamReader AsStream()
+        private StreamReader AsStream()
         {
             var path = Path.Combine(
                 Directory.GetCurrentDirectory(),
-                $"Year{_year}/AoCSource/{_day}-{_question}.txt");
+                $"Year{_year}/AoCSource/{_day}.txt");
             FileStream fileStream = new FileStream(path, FileMode.Open);
             return new StreamReader(fileStream);
         }
