@@ -8,7 +8,7 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            var result = Solver2019_10.SolveSecond(new FileInputResolver(2019, 10), (25, 31));
+            var result = Solver2019_11_2.Solve(new FileInputResolver(2019, 11));
             Console.WriteLine(result);
         }
     }
