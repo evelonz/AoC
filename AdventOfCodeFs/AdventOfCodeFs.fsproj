@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Year2019\SolveDay1.fs" />
+    <Compile Include="Library.fs" />
+  </ItemGroup>
+
+</Project>
