@@ -8,8 +8,12 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             var result = Solver2019_11_2.Solve(new FileInputResolver(2019, 11));
+            sw.Stop();
             Console.WriteLine(result);
+            Console.WriteLine(sw.ElapsedMilliseconds + " ms");
         }
     }
 }

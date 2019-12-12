@@ -24,7 +24,7 @@ namespace AdventOfCode.Year2019.Tests
 
         [Theory]
         [MemberData(nameof(SecondExampleData))]
-        public void SecondProblemExamples(string[] example, string _, string expected, (int x, int y) center, int targetCount)
+        public void SecondProblemExamples(string[] example, string expected, (int x, int y) center, int targetCount)
         {
             Solver2019_10.SolveSecond(new MockInputResolver(example), center, targetCount)
                 .Should().Be(expected);
@@ -43,7 +43,7 @@ namespace AdventOfCode.Year2019.Tests
 
         public static IEnumerable<object[]> SecondExampleData()
         {
-            return allData.Skip(4);
+            return allData.Skip(4).Select(s => new object[] { s[0], s[2], s[3], s[4] }); ;
         }
 
         private readonly static List<object[]> allData = new List<object[]>
