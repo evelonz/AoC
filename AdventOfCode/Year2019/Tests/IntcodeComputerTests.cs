@@ -80,8 +80,8 @@ namespace AdventOfCode.Year2019.Tests
         }
 
         [Theory]
-        [InlineData(99, "03,2,0")]
-        [InlineData(99, "203,2,0")]
+        [InlineData(99, "03,2,0,99")]
+        [InlineData(99, "203,2,0,99")]
         public void TestInput(long expected, string example)
         {
             var input = new MockInputResolver(new[] { example });
@@ -89,9 +89,11 @@ namespace AdventOfCode.Year2019.Tests
                 .First().Split(',')
                 .Select(s => long.Parse(s)).ToArray();
             var sut = new IntcodeComputer(instructions);
-            sut.Compute(99);
-            sut.LastSetValue.Should().Be(expected);
+            sut.Compute(null);
             sut.NeedNewInput.Should().BeTrue();
+            sut.Compute(expected);
+            sut.LastSetValue.Should().Be(expected);
+            sut.UsedInput.Should().BeTrue();
         }
 
         [Theory]

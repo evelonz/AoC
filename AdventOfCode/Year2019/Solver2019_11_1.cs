@@ -28,10 +28,6 @@ namespace AdventOfCode.Year2019
             ProgramState state = ProgramState.None;
             while (state != ProgramState.Halted)
             {
-                // Input promt is in start. Might have to check when halt is given as well.
-                state = sut.RunProgram(currentColour);
-                if (state == ProgramState.NeedInput) { } // Just keep going.
-
                 // Run and get next colour to paint.
                 state = sut.RunProgram(currentColour);
                 if (state == ProgramState.ProvidedOutput)
