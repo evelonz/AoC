@@ -12,7 +12,7 @@
         public long LastOutput { get; private set; }
         public int RelativeBase { get; private set; }
         public long LastSetValue { get; private set; }
-
+        public bool UsedInput { get; set; }
         public IntcodeComputer(long[] instructions)
         {
             this.instructions = instructions;
@@ -28,25 +28,28 @@
             Halted = false;
             RelativeBase = 0;
             NeedNewInput = false;
+            UsedInput = false;
             LastOutput = 0;
             LastSetValue = 0;
         }
 
-        public ProgramState RunProgram(long input)
+        public ProgramState RunProgram(long? input)
         {
             while(!Halted)
             {
                 Compute(input);
                 if (NeedNewInput) return ProgramState.NeedInput;
+                if (UsedInput) input = null;
                 if (ProvidedOutput) return ProgramState.ProvidedOutput;
             }
             return ProgramState.Halted;
         }
 
-        public void Compute(long input)
+        public void Compute(long? input2)
         {
             NeedNewInput = false;
             ProvidedOutput = false;
+            UsedInput = false;
             long inp1, inp2, outp, inv1, inv2, temp;
             inp1 = inp2 = outp = inv1 = inv2 = temp = 0L;
             int param1Type = 0, param2Type = 0, param3Type = 0;
@@ -57,6 +60,11 @@
             if (opcode == 99)
             {
                 Halted = true;
+                return;
+            }
+            if(opcode == 3 && !input2.HasValue)
+            {
+                NeedNewInput = true;
                 return;
             }
 
@@ -77,7 +85,7 @@
             if ("__x_______"[opcode] == 'x') temp = inv1 * inv2;
             if ("_______x__"[opcode] == 'x') temp = inv1 < inv2 ? 1 : 0;
             if ("________x_"[opcode] == 'x') temp = inv1 == inv2 ? 1 : 0;
-            if ("___x______"[opcode] == 'x') { temp = input; NeedNewInput = true; }
+            if ("___x______"[opcode] == 'x') { temp = (long)input2; UsedInput = true; }
             if ("____x_____"[opcode] == 'x') { LastOutput = inv1; ProvidedOutput = true; }
             if ("_________x"[opcode] == 'x') RelativeBase += (int)inv1;
             // Get location pointer for output.
