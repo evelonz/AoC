@@ -10,7 +10,7 @@ namespace AdventOfCode
         {
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-            var result = Solver2019_14_2.Solve(new FileInputResolver(2019, 14));
+            var result = Solver2019_15.SolveFirst(new FileInputResolver(2019, 15));
             sw.Stop();
             Console.WriteLine(result);
             Console.WriteLine(sw.ElapsedMilliseconds + " ms");

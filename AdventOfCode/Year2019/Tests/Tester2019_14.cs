@@ -40,11 +40,11 @@ namespace AdventOfCode.Year2019.Tests
             Solver2019_14.SolveSecond(new MockInputResolver(input), 435).Should().Be("15");
         }
 
-        [Fact(Skip = "Using brute force, each of the part 2 solutions takes about 17 minutes")]
-        public void SecondProblemMyInput()
-        {
-            Solver2019_14.SolveSecond(new FileInputResolver(2019, 14)).Should().Be("2074843");
-        }
+        //[Fact(Skip = "Using brute force, each of the part 2 solutions takes about 17 minutes")]
+        //public void SecondProblemMyInput()
+        //{
+        //    Solver2019_14.SolveSecond(new FileInputResolver(2019, 14)).Should().Be("2074843");
+        //}
 
         public static IEnumerable<object[]> FirstExampleData()
         {
