@@ -1,6 +1,8 @@
 ﻿using AdventOfCode.Utility;
 using System.Linq;
 using System;
+using System.Collections.Generic;
+
 namespace AdventOfCode.Year2019
 {
     static class Solver2019_22
@@ -16,7 +18,8 @@ namespace AdventOfCode.Year2019
             {
                 deck[i] = i;
             }
-
+            var l = new List<string>(100);
+            int itt = 0;
             foreach (var command in inData)
             {
                 if(command == "deal into new stack")
@@ -36,6 +39,17 @@ namespace AdventOfCode.Year2019
                     var anum = int.Parse(num);
                     DealWithIncN(ref deck, ref tempdeck, anum);
                 }
+
+                for (int i = 0; i < size; i++)
+                {
+                    if (deck[i] == 2019)
+                        l.Add($"{itt++}: {i}");
+                }
+            }
+            l.Reverse();
+            foreach (var item in l)
+            {
+                Console.WriteLine(item);
             }
 
             if(cardToFind.HasValue)
@@ -56,9 +70,147 @@ namespace AdventOfCode.Year2019
             return sb.ToString();
         }
 
-        public static string SolveSecond(IInputResolver input)
+        public static string SolveFirstIndex(IInputResolver input, long length, long index)
         {
-            return "";
+            var inData = input.AsEnumerable();
+
+            foreach (var command in inData)
+            {
+                if (command == "deal into new stack")
+                    index = DealIntoNewDeckIndex(index, length);
+                else if (command.StartsWith("cut"))
+                {
+                    var num = command.Substring(4);
+                    var anum = int.Parse(num);
+                    if (anum > 0)
+                        index = CutDeckIndex(index, anum, length);
+                    else
+                        index = CutDeckNegativeIndex(index, Math.Abs(anum), length);
+                }
+                else if (command.StartsWith("deal with increment"))
+                {
+                    var num = command.Substring(20);
+                    var anum = int.Parse(num);
+                    index = DealWithIncNIndex(index, anum, length);
+                }
+            }
+
+            return index.ToString();
+        }
+
+        public static string SolveReverse(IInputResolver input, long length, long index)
+        {
+            var inData = input.AsEnumerable();
+
+            inData = inData.Reverse().ToList();
+
+            Console.WriteLine(index);
+            var itt = 0;
+            foreach (var command in inData)
+            {
+                if (command == "deal into new stack")
+                    index = DealIntoNewDeckIndexRev(index, length);
+                else if (command.StartsWith("cut"))
+                {
+                    var num = command.Substring(4);
+                    var anum = int.Parse(num);
+                    if (anum > 0)
+                        index = CutDeckIndexRev(index, anum, length);
+                    else
+                        index = CutDeckNegativeIndexRev(index, Math.Abs(anum), length);
+                }
+                else if (command.StartsWith("deal with increment"))
+                {
+                    var num = command.Substring(20);
+                    var anum = int.Parse(num);
+                    index = DealWithIncNIndexRev(index, anum, length);
+                }
+
+                Console.WriteLine($"{itt++}: {index} - C: {command}");
+            }
+
+            return index.ToString();
+        }
+
+        public static long DealIntoNewDeckIndex(long index, long length)
+        {
+            // New position of the index n is (length - 1) - n?
+            // Examples: L = 10. 9 - 0 = 9. 9 - 2 = 7. 9 - 0 = 9.
+            return length - 1 - index;
+        }
+
+        public static long CutDeckIndex(long index, int cut, long length)
+        {
+            // A cut is in essense a shift of the deck.
+            // Damn, can all of these be done using bit operators? :)
+            var first = index - cut;
+            if(first < 0)
+            {
+                first += length;
+            }
+            return first;
+        }
+
+        public static long CutDeckNegativeIndex(long index, int cut, long length)
+        {
+            // Negative cut is just a shift in the other direction.
+            var first = index + cut;
+            if (first > length - 1)
+            {
+                first %= length;
+            }
+            return first;
+        }
+
+        public static long DealWithIncNIndex(long index, int increment, long length)
+        {
+            // This is a bit more tricky.
+            // Each index is ofset by an amount times the inc.
+            // For inc = 3: 0 => 0, 1 => 3, 2 => 6.
+            // It should however start to wrap after length - 1.
+            // For L = 10: n = 4 wrappes to pos 2.
+            // 4 * 3 = 12. 12 % 10 = 2.
+            // 7 should wrap to pos 1.
+            // 7 * 3 = 21. 21 % 10 = 1.
+            return (index * increment) % length;
+        }
+
+        public static long DealIntoNewDeckIndexRev(long index, long length)
+        {
+            // New position of the index n is (length - 1) - n?
+            // Examples: L = 10. 9 - 0 = 9. 9 - 2 = 7. 9 - 0 = 9.
+            // Reversed, it should be the same I guess.
+            return length - 1 - index;
+        }
+
+        public static long CutDeckIndexRev(long index, int cut, long length)
+            => CutDeckNegativeIndex(index, cut, length);
+
+        public static long CutDeckNegativeIndexRev(long index, int cut, long length)
+            => CutDeckIndex(index, cut, length);
+
+        public static long DealWithIncNIndexRev(long index, int increment, long length)
+        {
+            // This is a bit more tricky.
+            // Each index is ofset by an amount times the inc.
+            // For inc = 3: 0 => 0, 1 => 3, 2 => 6.
+            // It should however start to wrap after length - 1.
+            // For L = 10: n = 4 wrappes to pos 2.
+            // 4 * 3 = 12. 12 % 10 = 2.
+            // 7 should wrap to pos 1.
+            // 7 * 3 = 21. 21 % 10 = 1.
+            //return (index * increment) % length;
+            if (index == 0) return 0;
+            // + increment, since we count from 1. -1 to offset 0 index.
+            var positionInGroup = (index + increment - 1) / increment;
+
+            var offset = index % increment;
+            // Have to reverse offset somehow. 0 = 0
+            // but 2 = 1, and 1 = 2, and so on.
+            var offsetCorrected = offset == 0 ? 0 : increment - offset;
+            var res = offsetCorrected * increment + positionInGroup;
+            return res;
+
         }
 
         private static void DealIntoNewDeck(ref int[] deck, ref int[] targetDeck)

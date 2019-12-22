@@ -5,7 +5,7 @@ namespace AdventOfCode.Year2019
 {
     public class LargeArray
     {
-        public long _size;
+        public long Length;
         public int _arrSize;
         public long[][] _array;
 
@@ -27,7 +27,7 @@ namespace AdventOfCode.Year2019
 
         public LargeArray(long size)
         {
-            _size = size;
+            Length = size;
             if (size <= int.MaxValue)
             {
                 _array = new long[1][];
@@ -69,9 +69,9 @@ namespace AdventOfCode.Year2019
         {
             var inData = input.AsEnumerable();
 
-            var deck = new long[size];
-            var tempdeck = new long[size];
-            var tempdeck2 = new long[size];
+            var deck = new LargeArray(size);
+            var tempdeck = new LargeArray(size);
+            var tempdeck2 = new LargeArray(size);
             for (long i = 0; i < size; i++)
             {
                 deck[i] = i;
@@ -108,10 +108,15 @@ namespace AdventOfCode.Year2019
                 return (-1).ToString();
             }
 
-            return "";
+            var sb = new System.Text.StringBuilder((int)size * 2);
+            for (int i = 0; i < size; i++)
+            {
+                sb.Append(deck[i] + " ");
+            }
+            return sb.ToString();
         }
 
-        private static void DealIntoNewDeck(ref long[] deck, ref long[] targetDeck)
+        private static void DealIntoNewDeck(ref LargeArray deck, ref LargeArray targetDeck)
         {
             for (long i = 0; i < deck.Length; i++)
             {
@@ -125,7 +130,7 @@ namespace AdventOfCode.Year2019
             deck = retDeck;
         }
 
-        private static void CutDeck(ref long[] deck, ref long[] targetDeck, int cut, long[] cutted)
+        private static void CutDeck(ref LargeArray deck, ref LargeArray targetDeck, int cut, LargeArray cutted)
         {
             for (long i = 0; i < cut; i++)
             {
@@ -149,7 +154,7 @@ namespace AdventOfCode.Year2019
             deck = retDeck;
         }
 
-        private static void CutDeckNegative(ref long[] deck, ref long[] targetDeck, int cut, long[] cutted)
+        private static void CutDeckNegative(ref LargeArray deck, ref LargeArray targetDeck, int cut, LargeArray cutted)
         {
             for (int i = 0; i < cut; i++)
             {
@@ -172,7 +177,7 @@ namespace AdventOfCode.Year2019
             deck = retDeck;
         }
 
-        private static void DealWithIncN(ref long[] deck, ref long[] targetDeck, int increment)
+        private static void DealWithIncN(ref LargeArray deck, ref LargeArray targetDeck, int increment)
         {
             long set = 0;
             long index = 0;
