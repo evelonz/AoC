@@ -15,11 +15,14 @@
         public bool UsedInput { get; set; }
         public IntcodeComputer(long[] instructions)
         {
-            this.instructions = instructions;
-
+            this.instructions = new long[instructions.Length];
             _originalIns = new long[instructions.Length];
             instructions.CopyTo(_originalIns, 0);
+            instructions.CopyTo(this.instructions, 0);
         }
+
+        public override string ToString()
+            => $"H: {Halted}, NI: {NeedNewInput}, PO: {ProvidedOutput}";
 
         public void Reset()
         {
