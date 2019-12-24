@@ -118,21 +118,22 @@ namespace AdventOfCode.Year2019.Tests
         [Fact]
         public void DealWithIncNIndexRev()
         {
-            Solver2019_22.DealWithIncNIndexRev(9799, 36, 10).Should().Be(2519);
+            Solver2019_22.DealWithIncNIndex(9799, 36, 10_007).Should().Be(2519);
+            Solver2019_22.DealWithIncNIndexRev2(2519, 36, 10_007).Should().Be(9799);
 
 
-            Solver2019_22.DealWithIncNIndexRev(0, 3, 10).Should().Be(0);
-            Solver2019_22.DealWithIncNIndexRev(1, 3, 10).Should().Be(7);
-            Solver2019_22.DealWithIncNIndexRev(2, 3, 10).Should().Be(4);
+            Solver2019_22.DealWithIncNIndexRev2(0, 3, 10).Should().Be(0);
+            Solver2019_22.DealWithIncNIndexRev2(1, 3, 10).Should().Be(7);
+            Solver2019_22.DealWithIncNIndexRev2(2, 3, 10).Should().Be(4);
 
-            Solver2019_22.DealWithIncNIndexRev(3, 3, 10).Should().Be(1);
-            Solver2019_22.DealWithIncNIndexRev(4, 3, 10).Should().Be(8);
-            Solver2019_22.DealWithIncNIndexRev(5, 3, 10).Should().Be(5);
+            Solver2019_22.DealWithIncNIndexRev2(3, 3, 10).Should().Be(1);
+            Solver2019_22.DealWithIncNIndexRev2(4, 3, 10).Should().Be(8);
+            Solver2019_22.DealWithIncNIndexRev2(5, 3, 10).Should().Be(5);
 
-            Solver2019_22.DealWithIncNIndexRev(6, 3, 10).Should().Be(2);
-            Solver2019_22.DealWithIncNIndexRev(7, 3, 10).Should().Be(9);
-            Solver2019_22.DealWithIncNIndexRev(8, 3, 10).Should().Be(6);
-            Solver2019_22.DealWithIncNIndexRev(9, 3, 10).Should().Be(3);
+            Solver2019_22.DealWithIncNIndexRev2(6, 3, 10).Should().Be(2);
+            Solver2019_22.DealWithIncNIndexRev2(7, 3, 10).Should().Be(9);
+            Solver2019_22.DealWithIncNIndexRev2(8, 3, 10).Should().Be(6);
+            Solver2019_22.DealWithIncNIndexRev2(9, 3, 10).Should().Be(3);
 
         }
 

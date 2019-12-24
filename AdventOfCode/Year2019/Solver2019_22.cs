@@ -105,7 +105,27 @@ namespace AdventOfCode.Year2019
             inData = inData.Reverse().ToList();
 
             Console.WriteLine(index);
-            var itt = 0;
+            //var itt = 0;
+            //var sw = new System.Diagnostics.Stopwatch();
+            //sw.Start();
+            var hits = new HashSet<long>(1_000_000);
+            for (long i = 0; i < 101_741_582_076_661; i++)
+            {
+                index = SolveReverse(length, index, inData);
+                if (hits.Contains(index))
+                {
+
+                }
+                hits.Add(index);
+                //if (i % 100_000 == 0)
+                //    Console.WriteLine(sw.ElapsedMilliseconds);
+            }
+
+            return index.ToString();
+        }
+
+        private static long SolveReverse(long length, long index, IEnumerable<string> inData)
+        {
             foreach (var command in inData)
             {
                 if (command == "deal into new stack")
@@ -123,13 +143,13 @@ namespace AdventOfCode.Year2019
                 {
                     var num = command.Substring(20);
                     var anum = int.Parse(num);
-                    index = DealWithIncNIndexRev(index, anum, length);
+                    index = DealWithIncNIndexRev2(index, anum, length);
                 }
 
-                Console.WriteLine($"{itt++}: {index} - C: {command}");
+                //Console.WriteLine($"{itt++}: {index} - C: {command}");
             }
 
-            return index.ToString();
+            return index;
         }
 
         public static long DealIntoNewDeckIndex(long index, long length)
@@ -211,6 +231,28 @@ namespace AdventOfCode.Year2019
             var res = offsetCorrected * increment + positionInGroup;
             return res;
 
+        }
+
+        public static long DealWithIncNIndexRev2(long index, int increment, long length)
+        {
+            // Unable to find a good solution to this...
+            // Can only think of a solution which need "increament" number of calculations.
+            // For my input, that is at most 71 calculations.
+            if (index == 0) return 0;
+            var lastIndexPos = DealWithIncNIndex(length - 1, increment, length);
+            double x;
+            for (int m = 0; m <= increment; m++)
+            {
+                x = (length * m + lastIndexPos - index) / (increment * 1.0);
+                if (x > length - 1)
+                    return -1; // X will only grow and we already past a valid res.
+                var whole = Math.Abs(x % 1) <= (Double.Epsilon * 100);
+                if (whole && x >= 0)
+                {
+                    return length - 1 - (long)x;
+                }
+            }
+            return -1;
         }
 
         private static void DealIntoNewDeck(ref int[] deck, ref int[] targetDeck)
