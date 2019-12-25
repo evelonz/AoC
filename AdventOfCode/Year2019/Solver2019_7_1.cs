@@ -129,7 +129,7 @@ namespace AdventOfCode.Year2019
             var instructions = input.AsEnumerable().First().Split(',').Select(s => int.Parse(s)).ToArray();
 
             var phases = new[] { 4, 3, 2, 1, 0 };
-            var permutations = GetPermutations(phases, phases.Length);
+            var permutations = SetHelper.GetPermutations(phases, phases.Length);
             
             int max = 0;
             foreach (var phase in permutations)
@@ -146,15 +146,6 @@ namespace AdventOfCode.Year2019
             }
 
             return max.ToString();
-        }
-
-        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> list, int length)
-        {
-            if (length == 1) return list.Select(t => new T[] { t });
-
-            return GetPermutations(list, length - 1)
-                .SelectMany(t => list.Where(e => !t.Contains(e)),
-                    (t1, t2) => t1.Concat(new T[] { t2 }));
         }
     }
 
