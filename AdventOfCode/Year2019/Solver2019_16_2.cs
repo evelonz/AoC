@@ -1,6 +1,5 @@
 ﻿using AdventOfCode.Utility;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -9,208 +8,164 @@ namespace AdventOfCode.Year2019
 {
     static class Solver2019_16_2
     {
-        public static string Solve(IInputResolver input, int phases = 100, int repeat = 10_000)
+        public static string Solve(IInputResolver input, int repeat = 10_000)
         {
             var inData = input.AsEnumerable().First()
                 .ToArray()
                 .Select(s => int.Parse(s.ToString())).ToArray();
 
             var offset = int.Parse(string.Join("", inData.Take(7).Select(s => s.ToString())));
-
             inData = AmplifySignal(repeat, inData);
-
             var length = inData.Length;
-            var temp = new int[length];
-            // SIMD specific variables.
-            var isSimdEnabled = Vector.IsHardwareAccelerated;
-            var simdLength = Vector<int>.Count;
-            var oneVector = Vector<int>.One;
-
+            var resultStore = new int[length];
+            var (cOnlyPart, bOnlyPart) = GetImportanBreakPoints(length);
             var sw = new System.Diagnostics.Stopwatch();
-            var sw2 = new System.Diagnostics.Stopwatch();
 
-            // Get important break points.
-            var (bottomHalf, bHalf, startN) = 
-                GetImportanBreakPoints(length, isSimdEnabled, simdLength);
-
-            var n1Pat = new Vector<int>(new[] { 1, 0, -1, 0, 1, 0, -1, 0 });
-            var n2Pat = new Vector<int>(new[] { 1, 1, 0, 0, -1, -1, 0, 0 });
-
-            // Actual solution code.
-            for (int phase = 0; phase < phases; phase++)
+            // Run FFT for the set number of phases.
+            for (int phase = 0; phase < 100; phase++)
             {
-                //Console.WriteLine($"pashe {phase}, signal:");
-                //inData.ToList().ForEach(f => Console.Write(f));
-                //Console.WriteLine("");
                 sw.Restart();
+                FlawedFrequencyTransmission(inData, resultStore, offset, cOnlyPart, bOnlyPart);
 
-                // Tryin out if it is better to use vector dot product for small N.
-                // Currently only n = 1, think we can do it for at least a few more.
-                // If we can do it for more, then we can reuse the data vector as well!
-                for (int n = 1; n <= startN; ++n)
-                {
-                    var pat = n == 1 ? n1Pat : n2Pat;
-                    long sum = 0;
-                    var ii = 0;
-                    for (ii = 0; ii <= length - simdLength; ii += simdLength)
-                    {
-                        var s1 = new Vector<int>(inData, ii);
-                        var ss = Vector.Dot(s1, pat);
-                        sum += ss;
-                    }
-                    temp[n - 1] = (int)Math.Abs(sum % 10);
-                }
-
-                Parallel.For(startN, bHalf, (n) =>
-                //for (int n = 1; n < bottomHalf; ++n)
-                {
-                    //sw2.Restart();
-                    // Some values to group the data into sets of 0, 1, and -1 patterns.
-                    var patLength = 4 * n;
-                    var leading0 = n - 1;
-                    var lengthLeft = length - leading0;
-                    var a = lengthLeft / patLength;
-                    var b = (lengthLeft - a * patLength) / n;
-                    var c = lengthLeft - (a * patLength) - (b * n);
-
-                    long sum = 0;
-
-                    // Full patterns start with n*1, skip n, then n*-1 elements.
-                    for (int i = 0; i < a; i++)
-                    {
-                        // Sum from 4n*i+1 to 4n*i+n
-                        var start = 4 * n * i + leading0;
-                        var end = 4 * n * i + n + leading0;
-
-                        var ii = start;
-                        for (ii = start; ii <= end - simdLength; ii += simdLength)
-                        {
-                            var s1 = new Vector<int>(inData, ii);
-                            var ss = Vector.Dot(s1, oneVector);
-                            sum += ss;
-                        }
-                        for (int k = ii; k < end; k++)
-                        {
-                            sum += inData[k];
-                        }
-                        // Subtract the second range, which are -1.
-                        start = 4 * n * i + 2 * n + leading0;
-                        end = 4 * n * i + 3 * n + leading0;
-                        ii = start;
-                        for (ii = start; ii <= end - simdLength; ii += simdLength)
-                        {
-                            var s1 = new Vector<int>(inData, ii);
-                            var ss = Vector.Dot(s1, oneVector);
-                            sum -= ss;
-                        }
-                        for (int k = start; k < end; k++)
-                        {
-                            sum -= inData[k];
-                        }
-
-                        // We should now have skipped the two 0 ranges.
-                    }
-
-                    for (int i = 0; i < b; i++)
-                    {
-                        // b 1 and 3 are zero patterns.
-                        if (i == 1 || i == 3)
-                            continue;
-                        // Positive.
-                        if (i == 0)
-                        {
-                            var start = a * 4 * n + leading0;
-                            var end = a * 4 * n + n + leading0;
-                            for (int k = start; k < end; k++)
-                            {
-                                sum += inData[k];
-                            }
-                        }
-                        // Negative.
-                        else
-                        {
-                            var start = a * 4 * n + 2 * n + leading0;
-                            var end = a * 4 * n + 3 * n + leading0;
-                            for (int k = start; k < end; k++)
-                            {
-                                sum -= inData[k];
-                            }
-                        }
-                    }
-
-                    // c brings up the rest. Skip if zero.
-                    var factor = b == 0 ? 1
-                        : b == 2 ? -1
-                        : 0;
-                    if (factor != 0 && c != 0)
-                    {
-                        var startC = length - c;
-                        var endC = length;
-                        for (int k = startC; k < endC; k++)
-                        {
-                            sum += inData[k] * factor;
-                        }
-                    }
-
-                    temp[n - 1] = (int)Math.Abs(sum % 10);
-                    //sw2.Stop();
-                    //Console.WriteLine($"Time n: {n} - {sw2.Elapsed.TotalSeconds}");
-                }
-                );
-                // Only B part.
-                SumBOnlyPart(inData, temp, bottomHalf, bHalf, bHalf - 1, 0);
-                // Bottom half.
-                SumBottomHalf(inData, length, temp, bottomHalf);
-                
-                temp.CopyTo(inData, 0);
-                Array.Clear(temp, 0, temp.Length);
+                resultStore.CopyTo(inData, 0);
+                Array.Clear(resultStore, 0, resultStore.Length);
 
                 sw.Stop();
                 Console.WriteLine($"Phase {phase} in {sw.Elapsed.TotalSeconds}");
             }
 
-            //var res = inData.Take(8).Select(s => s.ToString());
-            //return String.Join("", res);
             var res = inData.Skip(offset).Take(8).Select(s => s.ToString());
             return String.Join("", res);
         }
 
-        private static (int bottomHalf, int bHalf, int startN) GetImportanBreakPoints(int length, bool isSimdEnabled, int simdLength)
+        public static void FlawedFrequencyTransmission(int[] inData, int[] resultStore, int offset, int cOnlyPart, int bOnlyPart)
         {
-            int bottomHalf = -1;
-            int bHalf = -1;
-            int startN = 1;
+            // Start at n = offset + 1. This becuase the n:th number only
+            // depend on the n:th to last number from the previous run.
+            // offest 0 => need all numbers.
+            // offset length - 1 => only need the last number.
+            var simdLength = Vector<int>.Count;
+            var oneVector = Vector<int>.One;
+            var length = inData.Length;
+
+            Parallel.For(offset + 1, bOnlyPart, (n) =>
+            //for (int n = 1; n < bottomHalf; ++n)
+            {
+                // Some values to group the data into sets of 0, 1, and -1 patterns.
+                var (a, b, c, leadingZeros) = GetPatterns(length, n);
+                long sum = 0;
+
+                // Full patterns start with n*1, skip n, then n*-1 elements.
+                for (int i = 0; i < a; i++)
+                {
+                    // Sum from 4n*i+1 to 4n*i+n
+                    var start = 4 * n * i + leadingZeros;
+                    var end = 4 * n * i + n + leadingZeros;
+
+                    var index = start;
+                    for (index = start; index <= end - simdLength; index += simdLength)
+                    {
+                        var vector = new Vector<int>(inData, index);
+                        sum += Vector.Dot(vector, oneVector);
+                    }
+                    for (int k = index; k < end; k++)
+                    {
+                        sum += inData[k];
+                    }
+                    // Subtract the second range, which are -1.
+                    start = 4 * n * i + 2 * n + leadingZeros;
+                    end = 4 * n * i + 3 * n + leadingZeros;
+                    index = start;
+                    for (index = start; index <= end - simdLength; index += simdLength)
+                    {
+                        var vector = new Vector<int>(inData, index);
+                        sum -= Vector.Dot(vector, oneVector);
+                    }
+                    for (int k = start; k < end; k++)
+                    {
+                        sum -= inData[k];
+                    }
+                }
+
+                for (int i = 0; i < b; i++)
+                {
+                    // b 1 and 3 are zero patterns.
+                    if (i == 1 || i == 3)
+                        continue;
+                    // Positive.
+                    if (i == 0)
+                    {
+                        var start = a * 4 * n + leadingZeros;
+                        var end = a * 4 * n + n + leadingZeros;
+                        for (int k = start; k < end; k++)
+                        {
+                            sum += inData[k];
+                        }
+                    }
+                    // Negative.
+                    else
+                    {
+                        var start = a * 4 * n + 2 * n + leadingZeros;
+                        var end = a * 4 * n + 3 * n + leadingZeros;
+                        for (int k = start; k < end; k++)
+                        {
+                            sum -= inData[k];
+                        }
+                    }
+                }
+
+                // c brings up the rest. Skip if zero.
+                var factor = b == 0 ? 1
+                    : b == 2 ? -1
+                    : 0;
+                if (factor != 0 && c != 0)
+                {
+                    var startC = length - c;
+                    var endC = length;
+                    for (int k = startC; k < endC; k++)
+                    {
+                        sum += inData[k] * factor;
+                    }
+                }
+
+                resultStore[n - 1] = (int)Math.Abs(sum % 10);
+            }
+            );
+
+            SumBOnlyPart(inData, resultStore, cOnlyPart, bOnlyPart, bOnlyPart - 1);
+
+            SumBottomHalf(inData, resultStore, cOnlyPart);
+        }
+
+        private static (int cOnlyPart, int bOnlyPart) GetImportanBreakPoints(int length)
+        {
+            int bOnlyPart = -1;
+            int cOnlyPart = -1;
             for (int n = 1; n <= length; n++)
             {
-                var patLength = 4 * n;
-                var leading0 = n - 1;
-                var lengthLeft = length - leading0;
-                var a = lengthLeft / patLength;
-                var b = (lengthLeft - a * patLength) / n;
-                var c = lengthLeft - (a * patLength) - (b * n);
+                var (a, b, c, _) = GetPatterns(length, n);
                 // When we only have positive B.
-                if (bHalf == -1 && a == 0 && (b == 1 || (b == 2 && c == 0)))
-                    bHalf = n;
+                if (bOnlyPart == -1 && a == 0 && (b == 1 || (b == 2 && c == 0)))
+                    bOnlyPart = n;
                 // Last breakpoint when we reached the half point. We can sum C.
                 if (c != 0 && b == 0 && a == 0)
                 {
-                    bottomHalf = n;
+                    cOnlyPart = n;
                     break;
                 }
-                // See if we can use SIMD for the first two itterations.
-                if (length % 4 == 0 && length % 8 == 0 && isSimdEnabled && simdLength == 8)
-                {
-                    if (n == 1 && b == 0 && c == 0)
-                    {
-                        startN = 2;
-                    }
-                    if (n == 2 && b == 0 && c == 0)
-                    {
-                        startN = 3;
-                    }
-                }
             }
-            return (bottomHalf, bHalf, startN);
+            return (cOnlyPart, bOnlyPart);
+        }
+
+        private static (int a, int b, int c, int leadingZeros) GetPatterns(int length, int n)
+        {
+            var patLength = 4 * n;
+            var leadingZeros = n - 1;
+            var lengthLeft = length - leadingZeros;
+            var a = lengthLeft / patLength;
+            var b = (lengthLeft - a * patLength) / n;
+            var c = lengthLeft - (a * patLength) - (b * n);
+            return (a, b, c, leadingZeros);
         }
 
         private static int[] AmplifySignal(int repeat, int[] inData)
@@ -229,73 +184,42 @@ namespace AdventOfCode.Year2019
             return inData;
         }
 
-        private static void SumBOnlyPart(int[] inData, int[] temp, int bottomHalf, int n, int leading0, int a)
+        private static void SumBOnlyPart(int[] inData, int[] resultStore, int cOnlyPart, int bOnlyPart, int leadingZeros)
         {
             // In this interval, we can again just sum row after row.
             // We have to add 1 item, and subtrack two for each itteration.
             long sum = 0;
-            // Get first sum.
-            var start = leading0;
-            var end = n + leading0;
+            // Get the sum of the first row.
+            var start = leadingZeros;
+            var end = bOnlyPart + leadingZeros; // Same as length...
             for (int k = start; k < end; k++)
             {
                 sum += inData[k];
             }
-            // Add it
-            temp[n - 1] = (int)Math.Abs(sum % 10);
+            resultStore[bOnlyPart - 1] = (int)Math.Abs(sum % 10);
 
             // Then subtrack the first element from each row, and add two more.
-            for (int m = n + 1; m < bottomHalf; m++)
+            for (int m = bOnlyPart + 1; m < cOnlyPart; m++)
             {
                 sum -= inData[m - 2]; // subtrack the first element.
                 sum += inData[end] + inData[end + 1]; // Add two new elements.
                 end += 2;
-
-                temp[m - 1] = (int)Math.Abs(sum % 10);
+                resultStore[m - 1] = (int)Math.Abs(sum % 10);
             }
         }
 
-        private static void SumBottomHalf(int[] inData, int length, int[] temp, int n)
+        private static void SumBottomHalf(int[] inData, int[] resultStore, int cOnlyPart)
         {
             // We have reached the bottom half of the matrix.
-            // Starting from the end, each row is the length-n+1 element + sum of previous row.
-            // up to the current n.
+            // Starting from the end, each row is the length-n+1 element added to the 
+            // sum of previous row, up to the start of the button half.
             // When done, set n = Length+1 to go to next iteration.
             long sum = 0;
-            for (int m = length - 1; m >= n - 1; m--)
+            for (int m = inData.Length - 1; m >= cOnlyPart - 1; m--)
             {
                 sum += inData[m];
-                temp[m] = (int)Math.Abs(sum%10);
+                resultStore[m] = (int)Math.Abs(sum%10);
             }
-        }
-
-        private static void PrintInData(int[] data)
-        {
-            foreach (var item in data)
-            {
-                Console.Write(item);
-            }
-        }
-
-        private static int[] GeneratePattern(int[] pattern, int position, int length)
-        {
-            var res = new List<int>(length + 1);
-
-            while (res.Count < length + 1)
-            {
-                for (int i = 0; i < pattern.Length; i++)
-                {
-                    for (int j = 0; j < position; j++)
-                    {
-                        res.Add(pattern[i]);
-                        if (res.Count == length + 1)
-                            return res.Skip(1).Take(length).ToArray();
-                    }
-                }
-            }
-
-
-            return res.Skip(1).Take(length).ToArray();
         }
     }
 }

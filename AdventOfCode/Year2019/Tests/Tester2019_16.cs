@@ -1,6 +1,6 @@
 ﻿using AdventOfCode.Utility;
 using FluentAssertions;
-using System.Numerics;
+using System.Collections.Generic;
 using Xunit;
 
 namespace AdventOfCode.Year2019.Tests
@@ -13,128 +13,85 @@ namespace AdventOfCode.Year2019.Tests
             Solver2019_16_1.Solve(new FileInputResolver(2019, 16)).Should().Be("27831665");
         }
 
-        [Fact(Skip = "This is not solved and could take hours to run.")]
+        [Theory]
+        [MemberData(nameof(FirstExampleData))]
+        public void FirstProblemExamples(string[] example, string expected)
+        {
+            Solver2019_16_1.Solve(new MockInputResolver(example)).Should().Be(expected);
+        }
+
+        [Fact]
         public void SecondProblemMyInput()
         {
-            Solver2019_16_2.Solve(new FileInputResolver(2019, 16)).Should().Be("208");
+            Solver2019_16_2.Solve(new FileInputResolver(2019, 16)).Should().Be("36265589");
         }
 
-        [Fact(Skip = "This is simply a SIMD perforamnce test.")]
-        public void SimdSumTest()
+        [Theory]
+        [MemberData(nameof(SecondExampleData))]
+        public void SecondProblemExamples(string[] example, string expected)
         {
-            var sut = new SimdTests(6_500_000);
-            var sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            var res = sut.SIMDArraySum();
-            sw.Stop();
-            var time = sw.ElapsedMilliseconds;
-            sw.Restart();
-            var res2 = sut.SeqArraySum();
-            sw.Stop();
-            var time2 = sw.ElapsedMilliseconds;
-            res.Should().Be(res2);
+            Solver2019_16_2.Solve(new MockInputResolver(example)).Should().Be(expected);
         }
 
-        [Fact(Skip = "This is simply a SIMD perforamnce test.")]
-        public void SimdSumTestShort()
+        [Fact]
+        public void TestFft()
         {
-            var sut = new SimdTestsShort(6_500_000);
-            var sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            var res = sut.SIMDArraySum();
-            sw.Stop();
-            var time = sw.ElapsedMilliseconds;
-            sw.Restart();
-            var res2 = sut.SeqArraySum();
-            sw.Stop();
-            var time2 = sw.ElapsedMilliseconds;
-            res.Should().Be(res2);
+            var inData = new[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            var (first, second, third, forth) = (new int[inData.Length], new int[inData.Length],
+                new int[inData.Length], new int[inData.Length]);
+            var offset = 0;
+            var cOnlyPart = 5;
+            var bOnlyPart = 4;
+
+            Solver2019_16_2.FlawedFrequencyTransmission(inData, first, offset, cOnlyPart, bOnlyPart);
+            Solver2019_16_2.FlawedFrequencyTransmission(first, second, offset, cOnlyPart, bOnlyPart);
+            Solver2019_16_2.FlawedFrequencyTransmission(second, third, offset, cOnlyPart, bOnlyPart);
+            Solver2019_16_2.FlawedFrequencyTransmission(third, forth, offset, cOnlyPart, bOnlyPart);
+
+            first.Should().Equal(4, 8, 2, 2, 6, 1, 5, 8);
+            second.Should().Equal(3, 4, 0, 4, 0, 4, 3, 8);
+            third.Should().Equal(0, 3, 4, 1, 5, 5, 1, 8);
+            forth.Should().Equal(0, 1, 0, 2, 9, 4, 9, 8);
         }
+
+        public readonly static List<object[]> FirstExampleData = new List<object[]>
+        {
+            new object[] {
+                new [] {
+                    "80871224585914546619083218645595"
+                }, "24176176"
+            },
+            new object[] {
+                new [] {
+                    "19617804207202209144916044189917"
+                }, "73745418"
+            },
+            new object[] {
+                new [] {
+                    "69317163492948606335995924319873"
+                }, "52432133"
+            },
+        };
+
+        public readonly static List<object[]> SecondExampleData = new List<object[]>
+        {
+            new object[] {
+                new [] {
+                    "03036732577212944063491565474664"
+                }, "84462026"
+            },
+            new object[] {
+                new [] {
+                    "02935109699940807407585447034323"
+                }, "78725270"
+            },
+            new object[] {
+                new [] {
+                    "03081770884921959731165446850517"
+                }, "53553731"
+            },
+        };
+
     }
 
-    public class SimdTests
-    {
-        public int[] DataArray { get; set; }
-        public SimdTests(int count)
-        {
-            DataArray = new int[count];
-            for (int i = 0; i < count; i++)
-            {
-                DataArray[i] = i;
-            }
-        }
-
-        public long SIMDArraySum()
-        {
-            var simdLength = Vector<int>.Count;
-            long sum = 0;
-            int i;
-            for (i = 0; i <= DataArray.Length - simdLength; i += simdLength)
-            {
-                var va = new Vector<int>(DataArray, i);
-                sum += Vector.Dot(va, Vector<int>.One);
-            }
-
-            for (; i < DataArray.Length; ++i)
-            {
-                sum += DataArray[i];
-            }
-
-            return sum;
-        }
-
-        public long SeqArraySum()
-        {
-            long sum = 0;
-            for (var i = 0; i < DataArray.Length; ++i)
-            {
-                sum += DataArray[i];
-            }
-
-            return sum;
-        }
-    }
-
-    public class SimdTestsShort
-    {
-        public short[] DataArray { get; set; }
-        public SimdTestsShort(int count)
-        {
-            DataArray = new short[count];
-            for (int i = 0; i < count; i++)
-            {
-                DataArray[i] = (short)(i % 10);
-            }
-        }
-
-        public long SIMDArraySum()
-        {
-            var simdLength = Vector<short>.Count;
-            long sum = 0;
-            int i;
-            for (i = 0; i <= DataArray.Length - simdLength; i += simdLength)
-            {
-                var va = new Vector<short>(DataArray, i);
-                sum += Vector.Dot(va, Vector<short>.One);
-            }
-
-            for (; i < DataArray.Length; ++i)
-            {
-                sum += DataArray[i];
-            }
-
-            return sum;
-        }
-
-        public long SeqArraySum()
-        {
-            long sum = 0;
-            for (var i = 0; i < DataArray.Length; ++i)
-            {
-                sum += DataArray[i];
-            }
-
-            return sum;
-        }
-    }
 }
