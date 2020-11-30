@@ -1,5 +1,5 @@
 ﻿#if COMPILED
-module SolveDay1
+module AoC2
 #endif
 
 // Shared

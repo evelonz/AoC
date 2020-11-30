@@ -1,12 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <!--<OutputType>Exe</OutputType>-->
+    <TargetFramework>net5.0</TargetFramework>
+    <!--<IsTestProject>true</IsTestProject>-->
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Year2019\DayOne\SolveDay2B.fs" />
+    <Compile Include="Year2019\SolveDay2.fs" />
+    <Compile Include="Year2019\DayOne\SolveDay1B.fs" />
     <Compile Include="Year2019\SolveDay1.fs" />
     <Compile Include="Library.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsUnit.xUnit" Version="4.0.2" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
   </ItemGroup>
 
 </Project>

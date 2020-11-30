@@ -1,5 +1,10 @@
-﻿namespace AdventOfCodeFs
+﻿module AoC
 
-module Say =
-    let hello name =
-        printfn "Hello %s" name
+open Day1
+
+
+//[<EntryPoint>]
+//let main argv =
+//    let result = resPart1
+//    printfn "%d" result
+//    0 // return an integer exit code
