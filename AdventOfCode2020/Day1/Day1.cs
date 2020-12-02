@@ -6,7 +6,7 @@ using Xunit;
 
 namespace AdventOfCode2020.Day1
 {
-     internal static class Day1
+    internal static class Day1
     {
         internal static string Solve1(IInputResolver input)
         {

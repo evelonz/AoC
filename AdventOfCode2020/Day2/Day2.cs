@@ -7,70 +7,51 @@ using Xunit;
 
 namespace AdventOfCode2020.Day2
 {
-     internal static class Day2
+    internal static class Day2
     {
-        class Record
+        public static int Day => 2;
+        private class Record
         {
-            public int Min { get; set; }
-            public int Max { get; set; }
-            public char Character { get; set; }
-            public string Password { get; set; }
+            public int FirstInt { get; init; }
+            public int SecondInt { get; init; }
+            public char Character { get; init; }
+            public string Password { get; init; } = "";
+
+            public static Record Parse(string input)
+            {
+                var dash = input.Split('-');
+                var spaces = dash[1].Split(' ');
+                var colon = spaces[1].Split(':');
+                return new Record
+                {
+                    FirstInt = int.Parse(dash[0]),
+                    SecondInt = int.Parse(spaces[0]),
+                    Character = colon[0].First(),
+                    Password = spaces[2],
+                };
+            }
         }
 
         internal static string Solve1(IInputResolver input)
-        {
-            var data = input.AsEnumerable();
-            var ddata = new List<Record>(1000);
-            foreach (var line in data)
-            {
-                var a = new Record();
-                var d = line.Split('-');
-                a.Min = int.Parse(d[0]);
-                var e = d[1].Split(' ');
-                a.Max = int.Parse(e[0]);
-                var f = e[1].Split(':');
-                a.Character = f[0].First();
-                a.Password = e[2];
-                ddata.Add(a);
-            }
-            int corr = 0;
-            foreach (var item in ddata)
-            {
-                var antal = item.Password.Where(x => x == item.Character).Count();
-                if (antal >= item.Min && antal <= item.Max)
-                    corr++;
-
-            }
-            return corr.ToString();
-        }
-
+            => input.AsEnumerable()
+                .Select(s => Record.Parse(s))
+                .Count(c =>
+                {
+                    var matches = c.Password.Count(p => p == c.Character);
+                    return matches >= c.FirstInt && matches <= c.SecondInt;
+                })
+                .ToString();
 
         internal static string Solve2(IInputResolver input)
-        {
-            var data = input.AsEnumerable();
-            var ddata = new List<Record>(1000);
-            foreach (var line in data)
-            {
-                var a = new Record();
-                var d = line.Split('-');
-                a.Min = int.Parse(d[0]);
-                var e = d[1].Split(' ');
-                a.Max = int.Parse(e[0]);
-                var f = e[1].Split(':');
-                a.Character = f[0].First();
-                a.Password = e[2];
-                ddata.Add(a);
-            }
-            int corr = 0;
-            foreach (var item in ddata)
-            {
-                var pos1 = item.Password[item.Min - 1] == item.Character ? 1 : 0;
-                var pos2 = item.Password[item.Max - 1] == item.Character ? 1 : 0;
-                if (pos1 + pos2 == 1)
-                    corr++;
-            }
-            return corr.ToString();
-        }
+            => input.AsEnumerable()
+                .Select(s => Record.Parse(s))
+                .Count(c =>
+                {
+                    var pos1 = c.Password[c.FirstInt - 1] == c.Character ? 1 : 0;
+                    var pos2 = c.Password[c.SecondInt - 1] == c.Character ? 1 : 0;
+                    return pos1 + pos2 == 1;
+                })
+                .ToString();
     }
 
     public class Test2020Day2
@@ -80,9 +61,9 @@ namespace AdventOfCode2020.Day2
         {
             Day2
                 .Solve1(new MockInputResolver(new string[] {
-"1-3 a: abcde"
-,"1-3 b: cdefg"
-,"2-9 c: ccccccccc" }))
+                    "1-3 a: abcde"
+                    ,"1-3 b: cdefg"
+                    ,"2-9 c: ccccccccc" }))
                 .Should().Be("2");
         }
 
@@ -90,7 +71,7 @@ namespace AdventOfCode2020.Day2
         public void FirstProblemInput()
         {
             var result = Day2
-                .Solve1(new FileInputResolver(2));
+                .Solve1(new FileInputResolver(Day2.Day));
 
             result.Should().Be("414");
         }
@@ -100,9 +81,9 @@ namespace AdventOfCode2020.Day2
         {
             Day2
                 .Solve2(new MockInputResolver(new string[] {
-"1-3 a: abcde"
-,"1-3 b: cdefg"
-,"2-9 c: ccccccccc" }))
+                    "1-3 a: abcde"
+                    ,"1-3 b: cdefg"
+                    ,"2-9 c: ccccccccc" }))
                 .Should().Be("1");
         }
 
@@ -110,7 +91,7 @@ namespace AdventOfCode2020.Day2
         public void SecondProblemInput()
         {
             var result = Day2
-                .Solve2(new FileInputResolver(2));
+                .Solve2(new FileInputResolver(Day2.Day));
 
             result.Should().Be("413");
         }
