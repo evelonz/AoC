@@ -98,4 +98,4 @@ let [<Fact>] ``part two with gives correct result``() =
     pussleInput.[1] <- 12
     pussleInput.[2] <- 2
     let result = RunCodeGetInstructions inputCopy 0
-    result.[0] |> should equal 3224742
+    result.[0] |> should equal 275620 // Wrong!
