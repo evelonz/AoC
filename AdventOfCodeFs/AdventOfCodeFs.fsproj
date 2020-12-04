@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Utility.fs" />
+    <Content Include="Year2020\Files\2.txt" />
+    <Compile Include="Year2020\SolveDay2.fs" />
     <Compile Include="Year2020\SolveDay1.fs" />
     <Compile Include="Year2019\DayOne\SolveDay2B.fs" />
     <Compile Include="Year2019\SolveDay2.fs" />
