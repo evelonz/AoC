@@ -1,7 +1,6 @@
 ﻿using AdventOfCode2020.Utility;
 using FluentAssertions;
 using System.Linq;
-
 using Xunit;
 
 namespace AdventOfCode2020.Day1
