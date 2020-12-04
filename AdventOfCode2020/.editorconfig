@@ -210,3 +210,9 @@ dotnet_diagnostic.CA1305.severity = none
 
 # CA1814: Prefer jagged arrays over multidimensional
 dotnet_diagnostic.CA1814.severity = silent
+
+# RCS1003: Add braces to if-else (when expression spans over multiple lines).
+dotnet_diagnostic.RCS1003.severity = silent
+
+# CA1310: Specify StringComparison for correctness
+dotnet_diagnostic.CA1310.severity = silent
