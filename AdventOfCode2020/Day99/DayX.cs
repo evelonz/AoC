@@ -3,7 +3,7 @@ using FluentAssertions;
 using System.Linq;
 using Xunit;
 
-namespace AdventOfCode2020.DayX
+namespace AdventOfCode2020.Day99
 {
     internal static class DayX
     {
@@ -63,28 +63,16 @@ namespace AdventOfCode2020.DayX
         public void FirstProblemInput()
         {
             var result = DayX
-                .Solve1(new FileInputResolver(98));
+                .Solve1(new FileInputResolver(99));
 
             result.Should().Be("1019571");
-        }
-
-        [Theory]
-        [InlineData("12", "2")]
-        [InlineData("14", "2")]
-        [InlineData("1969", "654")]
-        [InlineData("100756", "33583")]
-        public void SecondProblemExamples(string example, string expected)
-        {
-            DayX
-                .Solve2(new MockInputResolver(new string[] { example }))
-                .Should().Be(expected);
         }
 
         [Fact]
         public void SecondProblemInput()
         {
             var result = DayX
-                .Solve2(new FileInputResolver(98));
+                .Solve2(new FileInputResolver(99));
 
             result.Should().Be("100655544");
         }
