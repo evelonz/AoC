@@ -8,7 +8,7 @@ namespace AdventOfCode2020.Day5
 {
     internal static class Day5
     {
-        internal static (int partOne, int partTwo) Solve1(IInputResolver input)
+        internal static (int partOne, int partTwo) Solve(IInputResolver input)
         {
             var data = input.AsEnumerable();
             int currentIndex = 0;
@@ -76,7 +76,7 @@ namespace AdventOfCode2020.Day5
         public void SolveProblemExamples(string example, int expected)
         {
             var (partOne, _) = Day5
-                .Solve1(new MockInputResolver(new string[] { example }));
+                .Solve(new MockInputResolver(new string[] { example }));
 
             partOne.Should().Be(expected);
         }
@@ -85,7 +85,7 @@ namespace AdventOfCode2020.Day5
         public void SolveProblemInput()
         {
             var (partOne, partTwo) = Day5
-                .Solve1(new FileInputResolver(5));
+                .Solve(new FileInputResolver(5));
 
             partOne.Should().Be(850);
             partTwo.Should().Be(599);

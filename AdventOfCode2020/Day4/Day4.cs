@@ -8,7 +8,7 @@ namespace AdventOfCode2020.Day4
 {
     internal static class Day4
     {
-        internal static (int partOne, int partTwo) Solve1(IInputResolver input)
+        internal static (int partOne, int partTwo) Solve(IInputResolver input)
         {
             var data = input.AsEnumerable();
 
@@ -130,7 +130,7 @@ namespace AdventOfCode2020.Day4
         public void SolveProblemExamples(string[] example, int expectedFirst, int expectedSecond)
         {
             var (partOne, partTwo) = Day4
-                .Solve1(new MockInputResolver(example));
+                .Solve(new MockInputResolver(example));
 
             partOne.Should().Be(expectedFirst);
             partTwo.Should().Be(expectedSecond);
@@ -140,7 +140,7 @@ namespace AdventOfCode2020.Day4
         public void SolveProblemInput()
         {
             var (partOne, partTwo) = Day4
-                .Solve1(new FileInputResolver(4));
+                .Solve(new FileInputResolver(4));
 
             partOne.Should().Be(222);
             partTwo.Should().Be(140);

@@ -28,7 +28,7 @@ namespace AdventOfCode2020.Utility
         {
             var path = Path.Combine(
                 Directory.GetCurrentDirectory(),
-                $"Day{_day}/{_day}.txt");
+                $"Day{_day}\\{_day}.txt");
             FileStream fileStream = new FileStream(path, FileMode.Open);
             return new StreamReader(fileStream);
         }

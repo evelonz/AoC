@@ -5,76 +5,86 @@ using Xunit;
 
 namespace AdventOfCode2020.Day99
 {
-    internal static class DayX
+    internal static class Day99
     {
-        internal static string Solve1(IInputResolver input)
+        internal static (long partOne, long partTwo) Solve(IInputResolver input)
         {
-            var data = input.AsEnumerable().Select(s => int.Parse(s)).ToList();
-            for (int i = 0; i < data.Count; i++)
+            var data = input.AsEnumerable().ToList();
+            var numberOfLines = data.Count;
+            var width = data[0].Length;
+            var map = new string[numberOfLines];
+            int m = 0;
+            foreach (var row in data)
             {
-                var current = data[i];
-                var second = data.Skip(i+1).FirstOrDefault(x => x+current == 2020);
-                if (second == default)
-                    continue;
-                return (current * second).ToString();
+                map[m++] = row;
             }
-            return "-1";
-        }
 
+            var runshits = new long[5];
 
-        internal static string Solve2(IInputResolver input)
-        {
-            var data = input.AsEnumerable().Select(s => int.Parse(s)).ToList();
-            for (int i = 0; i < data.Count; i++)
+            int[,] runs = new int[,] { { 1, 1 }, { 3, 1 }, { 5, 1 }, { 7, 1 }, { 1, 2 } };
+
+            for (int run = 0; run < 5; run++)
             {
-                var current = data[i];
-                for (int j = i; j < data.Count; j++)
+                var right = runs[run, 0];
+                var down = runs[run, 1];
+                int line = 0;
+                int kol = 0;
+                for (int i = 0; i < numberOfLines - 1; i += down)
                 {
-                    var second = data[j];
-                    var third = data.Skip(j + 1).FirstOrDefault(x => x + current + second == 2020);
+                    line += down;
+                    kol = (kol + right) % width;
+                    var l = map[line];
+                    System.Console.WriteLine(l + " " + kol);
+                    var onmap = l[kol];
 
-                    if (third == default)
-                        continue;
-                    return (current * second * third).ToString();
+                    if (onmap == '#')
+                        runshits[run]++;
                 }
             }
 
-            return "-1";
+            for (int j = 1; j < 5; j++)
+            {
+                runshits[0] *= runshits[j];
+            }
+            return (runshits[1], runshits[0]);
         }
+
     }
 
     public class Test2020Day99
     {
         [Fact]
-        public void FirstProblemExamples()
+        public void SolveProblemExamples()
         {
-            DayX
-                .Solve1(new MockInputResolver(new string[] {
-                    "1721"
-                    ,"979"
-                    ,"366"
-                    ,"299"
-                    ,"675"
-                    ,"1456" }))
-                .Should().Be("514579");
+            var (partOne, partTwo) = Day99
+                .Solve(new MockInputResolver(exampleData));
+            partOne.Should().Be(7);
+            partTwo.Should().Be(336);
         }
 
         [Fact]
-        public void FirstProblemInput()
+        public void SolveProblemInput()
         {
-            var result = DayX
-                .Solve1(new FileInputResolver(99));
+            var (partOne, partTwo) = Day99
+                .Solve(new FileInputResolver(3));
 
-            result.Should().Be("1019571");
+            partOne.Should().Be(262);
+            partTwo.Should().Be(2698900776);
         }
 
-        [Fact]
-        public void SecondProblemInput()
-        {
-            var result = DayX
-                .Solve2(new FileInputResolver(99));
+        private static readonly string[] exampleData = new string[] {
+            "..##.......",
+            "#...#...#..",
+            ".#....#..#.",
+            "..#.#...#.#",
+            ".#...##..#.",
+            "..#.##.....",
+            ".#.#.#....#",
+            ".#........#",
+            "#.##...#...",
+            "#...##....#",
+            ".#..#...#.#"
+        };
 
-            result.Should().Be("100655544");
-        }
     }
 }
