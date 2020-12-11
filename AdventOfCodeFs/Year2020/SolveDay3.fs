@@ -47,7 +47,7 @@ let [<Fact>] ``part one solved``() =
     let result = solution1 data
     result |> should equal 262
 
-let [<Fact>] ``part two examples``() =
+let [<Fact>] ``part two solved``() =
     let data = Utility.loadPussleData __SOURCE_DIRECTORY__ "3"
     let result = solution2 data
     result |> should equal 2698900776u

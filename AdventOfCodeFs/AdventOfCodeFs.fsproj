@@ -4,11 +4,14 @@
     <!--<OutputType>Exe</OutputType>-->
     <TargetFramework>net5.0</TargetFramework>
     <!--<IsTestProject>true</IsTestProject>-->
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="Utility.fs" />
+    <Compile Include="Year2020\SolveDay4.fs" />
     <Compile Include="Year2020\SolveDay3.fs" />
+    <Content Include="Year2020\Files\4.txt" />
     <Content Include="Year2020\Files\3.txt" />
     <Content Include="Year2020\Files\2.txt" />
     <Compile Include="Year2020\SolveDay2.fs" />
