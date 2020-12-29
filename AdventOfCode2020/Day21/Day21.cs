@@ -72,7 +72,7 @@ namespace AdventOfCode2020.Day21
                 else
                 {
                     var allergens = possibilities.Where(x => x.Value).Select(s => s.Key).ToList();
-                    allergenIngredients.Add(new Ingredient() { name = currentIngredient, PossibleAllergens = allergens });
+                    allergenIngredients.Add(new Ingredient(currentIngredient, allergens));
                 }
             }
 
@@ -93,12 +93,12 @@ namespace AdventOfCode2020.Day21
                 // Find them, and exclude them from the remaining results.
                 var singleAllergen = allergenIngredients.First(f => f.PossibleAllergens.Count == 1);
                 var allergenToRemove = singleAllergen.PossibleAllergens.Single();
-                canonicalDangerousIngredients.Add(singleAllergen.name, allergenToRemove);
+                canonicalDangerousIngredients.Add(singleAllergen.Name, allergenToRemove);
 
                 for (int i = 0; i < cleanedRows.Count;)
                 {
                     var (Ing, Aller) = cleanedRows[i];
-                    var cleanedIng = Ing.Where(x => x != singleAllergen.name).ToList();
+                    var cleanedIng = Ing.Where(x => x != singleAllergen.Name).ToList();
                     var cleanedAller = Aller.Where(x => x != allergenToRemove).ToList();
                     if(cleanedIng.Count == 0 || cleanedAller.Count == 0)
                     {
@@ -130,8 +130,14 @@ namespace AdventOfCode2020.Day21
 
     internal class Ingredient
     {
-        public string name { get; set; }
+        public string Name { get; set; }
         public List<string> PossibleAllergens { get; set; }
+
+        public Ingredient(string name, List<string> possibleAllergens)
+        {
+            Name = name;
+            PossibleAllergens = possibleAllergens;
+        }
     }
 
     public class Test2020Day21

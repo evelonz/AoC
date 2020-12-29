@@ -239,7 +239,7 @@ namespace AdventOfCode2020.Day19
                 PartTwo = partTwo;
             }
 
-            private List<string> Cache { get; set; }
+            private List<string>? Cache { get; set; }
 
             public List<string> GetStrings(Dictionary<int, Day19.Node> nodes)
             {
@@ -326,7 +326,7 @@ namespace AdventOfCode2020.Day19
         public void ParseEndNode()
         {
             var sut = new Day19.Node(0, "\"b\"");
-            sut.GetStrings(null).Single().Should().Be("b");
+            sut.GetStrings(new Dictionary<int, Day19.Node>()).Single().Should().Be("b");
         }
 
         [Fact]
@@ -409,6 +409,7 @@ namespace AdventOfCode2020.Day19
         [InlineData("cba")]
         public void Replace8sWrongOrShortmessage(string message)
         {
+            message = message ?? throw new System.NullReferenceException(nameof(message));
             var rule42s = new List<string>() { "abc" };
             var queue = new Queue<string>();
 
@@ -444,11 +445,12 @@ namespace AdventOfCode2020.Day19
         }
 
         [Theory]
-        //[InlineData("abcde")]
-        //[InlineData("bacdef")]
+        [InlineData("abcde")]
+        [InlineData("bacdef")]
         [InlineData("abcdeq")]
         public void Replace11sWrongOrShortmessage(string message)
         {
+            message = message ?? throw new System.NullReferenceException(nameof(message));
             var rule42s = new List<string>() { "abc" };
             var rule31s = new List<string>() { "def" };
             var queue = new Queue<string>();

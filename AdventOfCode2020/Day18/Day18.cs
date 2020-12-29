@@ -67,6 +67,7 @@ namespace AdventOfCode2020.Day18
             return long.Parse(stack.Pop());
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("General", "RCS1079:Throwing of new NotImplementedException.", Justification = "Lazy since input is known.")]
         private static string Calc(string left, string op, string right)
         {
             long l = long.Parse(left);
@@ -75,10 +76,10 @@ namespace AdventOfCode2020.Day18
             {
                 "+" => l + r,
                 "*" => l * r,
+                _ => throw new NotImplementedException(),
             };
             return l.ToString();
         }
-
 
         private static long CalculateRowPart2(string data)
         {

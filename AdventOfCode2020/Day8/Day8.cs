@@ -11,7 +11,6 @@ namespace AdventOfCode2020.Day8
         internal static (int partOne, int partTwo) Solve(IInputResolver input)
         {
             var data = input.AsEnumerable().ToArray();
-            
             int ans1 = -1;
             (ans1, _) = RunCode(data);
 
@@ -52,14 +51,10 @@ namespace AdventOfCode2020.Day8
                 }
                 data[changeAttempt++] = lastInst;
             }
-
-            return (-1, -1);
         }
 
         private static (int, int) RunCode(string[] data)
         {
-            int ans1 = -1;
-            int ans2 = -1;
             var visited = new HashSet<int>(data.Length);
             int acc = 0;
             int pointer = 0;
@@ -68,10 +63,10 @@ namespace AdventOfCode2020.Day8
             {
                 if (visited.Contains(pointer))
                 {
-                    return (acc, ans2);
+                    return (acc, -1);
                 }
                 if (pointer == data.Length)
-                    return (ans1, acc);
+                    return (-1, acc);
 
                 visited.Add(pointer);
                 var inst = data[pointer][..3];
@@ -91,8 +86,6 @@ namespace AdventOfCode2020.Day8
                         break;
                 }
             }
-
-            return (ans1, ans2);
         }
     }
 

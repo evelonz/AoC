@@ -6,7 +6,7 @@ namespace AdventOfCode.Year2019
 {
     static class Solver2019_24_1
     {
-        public static string Solve(IInputResolver input, bool second = false)
+        public static string Solve(IInputResolver input)
         {
             var inData = input.AsEnumerable();
 
@@ -43,10 +43,10 @@ namespace AdventOfCode.Year2019
                     int j = 0;
                     foreach (var cell in row)
                     {
-                        var up = i == 0 ? false : map[i - 1][j];
-                        var down = i == map.Length - 1 ? false : map[i + 1][j];
-                        var left = j == 0 ? false : map[i][j - 1];
-                        var right = j == row.Length - 1 ? false : map[i][j + 1];
+                        var up = i != 0 && map[i - 1][j];
+                        var down = i != map.Length - 1 && map[i + 1][j];
+                        var left = j != 0 && map[i][j - 1];
+                        var right = j != row.Length - 1 && map[i][j + 1];
                         var sum = (up ? 1 : 0) + (down ? 1 : 0) 
                             + (left ? 1 : 0) + (right ? 1 : 0);
                         if (map[i][j])
@@ -75,8 +75,6 @@ namespace AdventOfCode.Year2019
 
                 PrintMap(map);
             }
-
-            return "";
         }
 
         private static void PrintMap(bool[][] map)

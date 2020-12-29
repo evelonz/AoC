@@ -216,3 +216,9 @@ dotnet_diagnostic.RCS1003.severity = silent
 
 # CA1310: Specify StringComparison for correctness
 dotnet_diagnostic.CA1310.severity = silent
+
+# RCS1246: Use element access.
+dotnet_diagnostic.RCS1246.severity = silent
+
+# RCS1058: Use compound assignment.
+dotnet_diagnostic.RCS1058.severity = silent
