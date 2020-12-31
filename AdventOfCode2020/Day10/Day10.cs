@@ -11,9 +11,6 @@ namespace AdventOfCode2020.Day10
         internal static (long partOne, long partTwo) Solve(IInputResolver input)
         {
             var data = input.AsEnumerable().Select(s => int.Parse(s)).OrderBy(o => o).ToList();
-
-            var deviceCount = data.Count;
-
             int jolt = 0;
             var diffs = new int[4];
 
@@ -69,7 +66,6 @@ namespace AdventOfCode2020.Day10
 
             return hits;
         }
-
     }
 
     public class Test2020Day10

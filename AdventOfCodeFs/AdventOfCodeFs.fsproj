@@ -14,10 +14,12 @@
     <Compile Include="Year2020\SolveDay3.fs" />
     <Compile Include="Year2020\SolveDay4.fs" />
     <Compile Include="Year2020\SolveDay5.fs" />
+    <Compile Include="Year2020\SolveDay10.fs" />
     <Content Include="Year2020\Files\2.txt" />
     <Content Include="Year2020\Files\3.txt" />
     <Content Include="Year2020\Files\4.txt" />
     <Content Include="Year2020\Files\5.txt" />
+    <Content Include="Year2020\Files\10.txt" />
     <Compile Include="Year2019\DayOne\SolveDay1B.fs" />
     <Compile Include="Year2019\DayOne\SolveDay2B.fs" />
     <Compile Include="Year2019\SolveDay1.fs" />
