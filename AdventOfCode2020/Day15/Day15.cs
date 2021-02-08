@@ -12,22 +12,22 @@ namespace AdventOfCode2020.Day15
         {
             var data = input.AsEnumerable().First().Split(',').Select(s => int.Parse(s)).ToList();
             int lastSpoken = 1;
-            var spokenWorkds = data.ToDictionary(d => d, _ => lastSpoken++);
+            var spokenWords = data.ToDictionary(d => d, _ => lastSpoken++);
             int lastSpokenWord = data.Last();
             long ans1 = 0L;
-            spokenWorkds.Remove(lastSpokenWord); // One word should not be added until checked if spoken before.
+            spokenWords.Remove(lastSpokenWord); // One word should not be added until checked if spoken before.
             for (int round = data.Count; round < 30000000; round++)
             {
                 // If spoken before
-                if(spokenWorkds.TryGetValue(lastSpokenWord, out lastSpoken))
+                if(spokenWords.TryGetValue(lastSpokenWord, out lastSpoken))
                 {
-                    spokenWorkds[lastSpokenWord] = round;
+                    spokenWords[lastSpokenWord] = round;
                     lastSpokenWord = round - lastSpoken;
                 }
                 // else 0
                 else
                 {
-                    spokenWorkds[lastSpokenWord] = round;
+                    spokenWords[lastSpokenWord] = round;
                     lastSpokenWord = 0;
                 }
                 if(round == 2019)
@@ -45,7 +45,7 @@ namespace AdventOfCode2020.Day15
     {
         [Theory]
         [MemberData(nameof(ExampleData))]
-        public void SolveProblemExamples2(string[] example, int expectedFirst, int expectedSecond)
+        public void SolveProblemExamples(string[] example, int expectedFirst, int expectedSecond)
         {
             var (partOne, partTwo) = Day15
                 .Solve(new MockInputResolver(example));
