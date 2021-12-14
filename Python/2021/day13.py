@@ -31,11 +31,6 @@ for line in input:
             maxY = y
         paper.add((x, y))
 
-# We always want an even number of lines, so we can fold it even on the given fold line.
-if (maxY % 2) != 0:
-    maxY += 1
-if (maxX % 2) != 0:
-    maxX += 1
 #print(maxX, " ", maxY)
 #printPaper(maxX, maxY, paper)
 
@@ -43,19 +38,21 @@ for index, line in enumerate(folds):
 # line = folds[0]
     newPaper = set()
     if line[0] == 'y':
-        y = line[1]
+        foldOnY = line[1]
+        doubleY = foldOnY*2
         for dot in paper:
-            if dot[1] > y:
-                newY = maxY - dot[1]
+            if dot[1] > foldOnY:
+                newY = doubleY - dot[1]
                 newPaper.add((dot[0], newY))
             else:
                 newPaper.add(dot)
         maxY = line[1] - 1
     elif line[0] == 'x':
-        x = line[1]
+        foldOnX = line[1]
+        doubleX = foldOnX*2
         for dot in paper:
-            if dot[0] > x:
-                newX = maxX - dot[0]
+            if dot[0] > foldOnX:
+                newX = doubleX - dot[0]
                 newPaper.add((newX, dot[1]))
             else:
                 newPaper.add(dot)
