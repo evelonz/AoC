@@ -5,97 +5,28 @@ from collections import namedtuple
 # Since index 0 returns #, and index 511 returns ., and infinite number of pixels will flicker.
 # I suspect it's like this on everyones input.
 
-fakeInput= ["..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..##..###..######.###...####..#..#####..##..#.#####...##.#.#..#.##..#.#......#.###.######.###.####...#.##.##..#..#..#####.....#.#....###..#.##......#.....#..#..#..##..#...##.######.####.####.#.#...#.......#..#.#.#...####.##.#......#..#...##.#.##..#...##.#.##..###.#......#.#.......#.#.#.####.###.##...#.....####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#.......##..####..#...#.#.#...##..#.#..###..#####........#..####......#..#",
+fakeInput= ["#.#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..##..###..######.###...####..#..#####..##..#.#####...##.#.#..#.##..#.#......#.###.######.###.####...#.##.##..#..#..#####.....#.#....###..#.##......#.....#..#..#..##..#...##.######.####.####.#.#...#.......#..#.#.#...####.##.#......#..#...##.#.##..#...##.#.##..###.#......#.#.......#.#.#.####.###.##...#.....####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#.......##..####..#...#.#.#...##..#.#..###..#####........#..####......#...",
             "",
-            "#..#.",
+            "...#.",
             "#....",
-            "##..#",
-            "..#..",
-            "..###"]
+            ".....",
+            "....#",
+            ".#..."]
 Bounds = namedtuple('Bounds', 'minX maxX minY maxY')
 #input = [x.rstrip() for x in fileinput.input(encoding="utf-16")]
-input = [x.rstrip() for x in open(sys.argv[1])] if sys.argv[0].endswith('day20.py') and len(sys.argv) > 1 else fakeInput
-#print(input)
+input = [x.rstrip() for x in open(sys.argv[1])] if sys.argv[0].endswith('day20_2.py') and len(sys.argv) > 1 else fakeInput
 algoKey = input[0]
 currentImage = set()
 for y, line in enumerate(input[2:]):
     for x, char  in enumerate(line):
         if char == "#":
             currentImage.add((x, y))
-#print(currentImage)
 
-def getCharIndex(pixel, image, bounds, step):
-    charIndex = list("000000000")
-    charIndex[0] = "1" if (pixel[0]-1, pixel[1]-1) in image else "0"
-    charIndex[1] = "1" if (pixel[0]  , pixel[1]-1) in image else "0"
-    charIndex[2] = "1" if (pixel[0]+1, pixel[1]-1) in image else "0"
-
-    charIndex[3] = "1" if (pixel[0]-1, pixel[1]) in image else "0"
-    charIndex[4] = "1" if (pixel[0]  , pixel[1]) in image else "0"
-    charIndex[5] = "1" if (pixel[0]+1, pixel[1]) in image else "0"
-
-    charIndex[6] = "1" if (pixel[0]-1, pixel[1]+1) in image else "0"
-    charIndex[7] = "1" if (pixel[0]  , pixel[1]+1) in image else "0"
-    charIndex[8] = "1" if (pixel[0]+1, pixel[1]+1) in image else "0"
-
-    # Custom logic for infinite flickering pixels.
-    # If flickered on, and outside the bound of the last check, then set to 1.
-    # 
-    if step % 2 == 0:
-        return ''.join(charIndex)
-    if pixel == (4, -1):
-        a=2
-    charIndex2 = list("000000000")
-    charIndex2[0] = "1" if pixel[0]-1 < bounds.minX or pixel[1]-1 < bounds.minY else charIndex[0]
-    charIndex2[1] = "1" if pixel[1]-1 < bounds.minY else charIndex[1]
-    charIndex2[2] = "1" if pixel[0]-1 > bounds.maxX or pixel[1]-1 < bounds.minY else charIndex[2]
-
-    charIndex2[3] = "1" if pixel[0]-1 < bounds.minX else charIndex[3]
-    charIndex2[4] = charIndex[4]
-    charIndex2[5] = "1" if pixel[0]-1 > bounds.maxX else charIndex[5]
-
-    charIndex2[6] = "1" if pixel[0]-1 < bounds.minX or pixel[1]+1 > bounds.maxY else charIndex[6]
-    charIndex2[7] = "1" if pixel[1]+1 > bounds.maxY else charIndex[7]
-    charIndex2[8] = "1" if pixel[0]-1 > bounds.maxX or pixel[1]+1 > bounds.maxY else charIndex[8]
-    
-    if charIndex != charIndex2:
-        print(pixel)
-    return ''.join(charIndex2)
-
-def setPixelsToCheck(image):
-    pixelsToCheck = set()
-    minX = 9999
-    minY = 9999
-    maxX = -9999
-    maxY = -9999
-    for pixel in image:
-        pixelsToCheck.add((pixel[0]-1, pixel[1]-1))
-        pixelsToCheck.add((pixel[0]  , pixel[1]-1))
-        pixelsToCheck.add((pixel[0]+1, pixel[1]-1))
-
-        pixelsToCheck.add((pixel[0]-1, pixel[1]))
-        pixelsToCheck.add((pixel[0]  , pixel[1]))
-        pixelsToCheck.add((pixel[0]+1, pixel[1]))
-
-        pixelsToCheck.add((pixel[0]-1, pixel[1]+1))
-        pixelsToCheck.add((pixel[0]  , pixel[1]+1))
-        pixelsToCheck.add((pixel[0]+1, pixel[1]+1))
-
-        if pixel[0]-1 < minX:
-            minX = pixel[0]-1
-        if pixel[0]+1 > maxX:
-            maxX = pixel[0]+1
-        if pixel[1]-1 < minY:
-            minY = pixel[1]-1
-        if pixel[1]+1 > maxY:
-            maxY = pixel[1]+1
-    return (pixelsToCheck, Bounds(minX, maxX, minY, maxY))
-
-def printImage(image):
-    minX = 9999
-    minY = 9999
-    maxX = -9999
-    maxY = -9999
+def getBounds(image):
+    minX = float('inf')
+    minY = float('inf')
+    maxX = float('-inf')
+    maxY = float('-inf')
     for pixel in image:
         if pixel[0] < minX:
             minX = pixel[0]
@@ -105,34 +36,59 @@ def printImage(image):
             minY = pixel[1]
         if pixel[1] > maxY:
             maxY = pixel[1]
-    for y in range(minY, maxY+1):
+    return Bounds(minX, maxX, minY, maxY)
+
+def printImage(image, bounds):
+    for y in range(bounds.minY-1, bounds.maxY+2):
         p = ""
-        for x in range(minX, maxX+1):
+        for x in range(bounds.minX-1, bounds.maxX+2):
             p += "#" if (x, y) in image else "."
         print(p)
     print()
-print(len(currentImage))
-#printImage(currentImage)
 
+def isOutOfBounds(x, y, bounds):
+    return x < bounds.minX or x > bounds.maxX or y < bounds.minY or y > bounds.maxY
 
-for step in range(2):
-    (pixelsToCheck, bounds) = setPixelsToCheck(currentImage)
-    print(bounds)
+def getChar(x, y, image, bounds, oobValue):
+    return "1" if (x, y) in image else oobValue if isOutOfBounds(x, y, bounds) else "0"
+
+def getCharIndex(pixel, image, bounds, oobValue):
+    charIndex = list("000000000")
+    charIndex[0] = getChar(pixel[0]-1, pixel[1]-1, image, bounds, oobValue)
+    charIndex[1] = getChar(pixel[0]  , pixel[1]-1, image, bounds, oobValue)
+    charIndex[2] = getChar(pixel[0]+1, pixel[1]-1, image, bounds, oobValue)
+
+    charIndex[3] = getChar(pixel[0]-1, pixel[1]  , image, bounds, oobValue)
+    charIndex[4] = getChar(pixel[0]  , pixel[1]  , image, bounds, oobValue)
+    charIndex[5] = getChar(pixel[0]+1, pixel[1]  , image, bounds, oobValue)
+
+    charIndex[6] = getChar(pixel[0]-1, pixel[1]+1, image, bounds, oobValue)
+    charIndex[7] = getChar(pixel[0]  , pixel[1]+1, image, bounds, oobValue)
+    charIndex[8] = getChar(pixel[0]+1, pixel[1]+1, image, bounds, oobValue)
+
+    return ''.join(charIndex)
+
+#print(currentImage)
+zeroValue = "0" if algoKey[0] == '.' else "1"
+maxValue = "1" if algoKey[:-1] == '#' and algoKey[0] == '#' else "0"
+for step in range(50):
+    bounds = getBounds(currentImage)
+    #print(len(currentImage))
+    #print(bounds)
+    #printImage(currentImage, bounds)
+    oobValue = maxValue if step % 2 == 0 else zeroValue
     newImage = set()
-    for pixel in pixelsToCheck:
-        if pixel[0] == 2 and pixel[1] == 2:
-            a = 1
-        charIndex = getCharIndex(pixel, currentImage, bounds, step)
-        decimalIndex = int(charIndex, 2)
-        newPixel = algoKey[decimalIndex]
-        if newPixel == "#":
-            newImage.add((pixel[0], pixel[1]))
+    for y in range(bounds.minY-1, bounds.maxY+2):
+        for x in range(bounds.minX-1, bounds.maxX+2):
+            if x == 5 and y == 0:
+                a=1
+            charIndex = getCharIndex((x, y), currentImage, bounds, oobValue)
+            decimalIndex = int(charIndex, 2)
+            newPixel = algoKey[decimalIndex]
+            if newPixel == "#":
+                newImage.add((x, y))
     currentImage = newImage
+    if step == 1:
+        print(len(currentImage))
 
-# 5398 too high
-# 5300 too high
-# 675 too low
-    print(len(currentImage))
-    printImage(currentImage)
-
-    #print(currentImage)
+print(len(currentImage))
