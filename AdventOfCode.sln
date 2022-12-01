@@ -5,11 +5,18 @@ VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode", "AdventOfCode\AdventOfCode.csproj", "{925E3F23-5ACC-4301-91C9-0765CBE0C32F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AdventOfCodeFs", "AdventOfCodeFs\AdventOfCodeFs.fsproj", "{2D4FA804-8D4C-472C-BB1C-F11E2446C511}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AdventOfCodeFs", "AdventOfCodeFs\AdventOfCodeFs.fsproj", "{2D4FA804-8D4C-472C-BB1C-F11E2446C511}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventOfCode2020", "AdventOfCode2020\AdventOfCode2020.csproj", "{60CEBD20-E3DE-4EB7-AA3A-F852A4BBA310}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{27DE1AA5-356E-4075-804F-29524CC92B3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{27DE1AA5-356E-4075-804F-29524CC92B3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2022", "AdventOfCode2022\AdventOfCode2022.csproj", "{90DD5D30-5BFC-49A2-A36E-6E7C78C8393E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F192E623-EFB3-4216-8A2E-96E18D5761BA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +40,10 @@ Global
 		{27DE1AA5-356E-4075-804F-29524CC92B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27DE1AA5-356E-4075-804F-29524CC92B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27DE1AA5-356E-4075-804F-29524CC92B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90DD5D30-5BFC-49A2-A36E-6E7C78C8393E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90DD5D30-5BFC-49A2-A36E-6E7C78C8393E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90DD5D30-5BFC-49A2-A36E-6E7C78C8393E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90DD5D30-5BFC-49A2-A36E-6E7C78C8393E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -63,12 +63,12 @@ namespace AdventOfCode2020.Day19.Optimization
                 }
                 else if (Type == 2)
                 {
-                    return FetchNodes(RulesLeft, nodes, candidates, index);
+                    return FetchNodes(RulesLeft!, nodes, candidates, index);
                 }
                 else
                 {
-                    var (ret2, index2) = FetchNodes(RulesLeft, nodes, candidates, index);
-                    var (ret3, _) = FetchNodes(RulesRight, nodes, candidates, index);
+                    var (ret2, index2) = FetchNodes(RulesLeft!, nodes, candidates, index);
+                    var (ret3, _) = FetchNodes(RulesRight!, nodes, candidates, index);
                     //if (index2 != index3) throw new System.Exception("This code does not handle variable length indexes for branches");
                     return (ret2.Concat(ret3).ToList(), index2);
                 }
