@@ -6,93 +6,33 @@ namespace AdventOfCode2022.Day2;
 
 internal static class Day2
 {
-    internal static (int partOne, int partTwo) Solve2(IInputResolver input)
-    {
-        var score = 0;
-        var scoreTwo = 0;
-        foreach (var item in input.AsEnumerable())
+    internal static (int partOne, int partTwo) Solve(IInputResolver input)
+        => input.AsEnumerable().Select(s => s switch
         {
-            var oponent = item.Split(' ')[0];
-            var you = item.Split(' ')[1];
-            var result = you switch
-            {
-                "X" => PlayRock(oponent),
-                "Y" => PlayPaper(oponent),
-                "Z" => PlayScissors(oponent),
-                _ => throw new Exception("Missed type")
-            };
-            score += result;
+            // A = Rock, B = Paper, C = Scissors,
+            // X = Rock/Lose, Y = Paper/Draw, Z = Scissors/Win
+            "A X" => (1 + 3, 3 + 0),
+            "A Y" => (2 + 6, 1 + 3),
+            "A Z" => (3 + 0, 2 + 6),
+            "B X" => (1 + 0, 1 + 0),
+            "B Y" => (2 + 3, 2 + 3),
+            "B Z" => (3 + 6, 3 + 6),
+            "C X" => (1 + 6, 2 + 0),
+            "C Y" => (2 + 0, 3 + 3),
+            "C Z" => (3 + 3, 1 + 6),
+            _ => throw new Exception($"Uncaught case {s}")
+        })
+        .Aggregate((sum, next) => (sum.Item1 + next.Item1, sum.Item2 + next.Item2));
 
-            // Part two
-            var resultTwo = you switch
-            {
-                "X" => PlayLose(oponent),
-                "Y" => PlayDraw(oponent),
-                "Z" => PlayWin(oponent),
-                _ => throw new Exception("Missed type")
-            };
-            scoreTwo += resultTwo;
-        }
-
-        return (score, scoreTwo);
-    }
-
-    private static int PlayLose(string oponent) => oponent switch
-    {
-        "A" => PlayScissors(oponent),
-        "B" => PlayRock(oponent),
-        "C" => PlayPaper(oponent),
-        _ => throw new Exception("Missed lose play")
-    };
-
-    private static int PlayDraw(string oponent) => oponent switch
-    {
-        "A" => PlayRock(oponent),
-        "B" => PlayPaper(oponent),
-        "C" => PlayScissors(oponent),
-        _ => throw new Exception("Missed draw play")
-    };
-
-    private static int PlayWin(string oponent) => oponent switch
-    {
-        "A" => PlayPaper(oponent),
-        "B" => PlayScissors(oponent),
-        "C" => PlayRock(oponent),
-        _ => throw new Exception("Missed win play")
-    };
-
-    private static int PlayRock(string oponent) => oponent switch
-    {
-        "A" => 1 + 3, // Rock
-        "B" => 1 + 0, // Paper
-        "C" => 1 + 6, // Scissors
-        _ => throw new Exception("Missed type Rock")
-    };
-
-    private static int PlayPaper(string oponent) => oponent switch
-    {
-        "A" => 2 + 6,
-        "B" => 2 + 3,
-        "C" => 2 + 0,
-        _ => throw new Exception("Missed type Paper")
-    };
-
-    private static int PlayScissors(string oponent) => oponent switch
-    {
-        "A" => 3 + 0,
-        "B" => 3 + 6,
-        "C" => 3 + 3,
-        _ => throw new Exception("Missed type Scissors")
-    };
 }
 
-public class Test2020Day2
+public class Test2022Day2
 {
     [Fact]
     public void FirstProblemExamples()
     {
         Day2
-            .Solve2(new MockInputResolver(new string[] {
+            .Solve(new MockInputResolver(new string[] {
                 "A Y",
                 "B X",
                 "C Z",
@@ -104,7 +44,7 @@ public class Test2020Day2
     public void ProblemInput()
     {
         var (partOne, partTwo) = Day2
-            .Solve2(new FileInputResolver(2));
+            .Solve(new FileInputResolver(2));
 
         partOne.Should().Be(9177);
         partTwo.Should().Be(12111);

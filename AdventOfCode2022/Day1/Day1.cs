@@ -32,7 +32,7 @@ internal static class Day1
     }
 }
 
-public class Test2020Day1
+public class Test2022Day1
 {
     [Fact]
     public void FirstProblemExamples()
