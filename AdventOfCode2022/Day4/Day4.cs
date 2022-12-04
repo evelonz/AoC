@@ -6,38 +6,24 @@ namespace AdventOfCode2022.Day4;
 
 internal static class Day4
 {
-    internal static (int partOne, int partTwo) Solve(IInputResolver input)
-    {
-        var partOne = 0;
-        var partTwo = 0;
-        foreach (var item in input.AsEnumerable())
-        {
-            var left = item.Split(',')[0];
-            var right = item.Split(',')[1];
-
-            var (leftStart, leftEnd) = left.Split('-') switch { var a => (int.Parse(a[0]), int.Parse(a[1])) };
-            var (rightStart, rightEnd) = right.Split('-') switch { var a => (int.Parse(a[0]), int.Parse(a[1])) };
-
-            // Left within Right.
-            if (leftStart <= rightStart && leftEnd >= rightEnd)
+    internal static (int partOne, int partTwo) Solve(IInputResolver input) 
+        => input.AsEnumerable()
+            .Select(s => s.Split(','))
+            .Select(s =>
             {
-                partOne++;
-            }
-            // Right within Left
-            else if (rightStart <= leftStart && rightEnd >= leftEnd)
+                var (leftStart, leftEnd) = s[0].Split('-') switch { var a => (int.Parse(a[0]), int.Parse(a[1])) };
+                var (rightStart, rightEnd) = s[1].Split('-') switch { var a => (int.Parse(a[0]), int.Parse(a[1])) };
+                return (leftStart, leftEnd, rightStart, rightEnd);
+            })
+            .Aggregate((0, 0), (sum, next) =>
             {
-                partOne++;
-            }
-
-            if (leftStart <= rightEnd && rightStart <= leftEnd)
-            {
-                partTwo++;
-            }
-
-        }
-
-        return (partOne, partTwo);
-    }
+                var fulleInRagne = (next.leftStart <= next.rightStart && next.leftEnd >= next.rightEnd)
+                    || (next.rightStart <= next.leftStart && next.rightEnd >= next.leftEnd)
+                    ? 1 : 0;
+                var partiallyInRange = next.leftStart <= next.rightEnd && next.rightStart <= next.leftEnd
+                    ? 1 : 0;
+                return (sum.Item1 + fulleInRagne, sum.Item2 + partiallyInRange);
+            });
 
 }
 
