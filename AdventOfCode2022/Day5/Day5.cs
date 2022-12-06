@@ -103,7 +103,7 @@ public class Test2022Day5
             .Should().Be(("CMZ", "MCD"));
     }
 
-        [Fact]
+    [Fact]
     public void ProblemInput()
     {
         var (partOne, partTwo) = Day5
