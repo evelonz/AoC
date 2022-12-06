@@ -1,6 +1,5 @@
 ﻿using AdventOfCode2022.Utility;
 using FluentAssertions;
-using System.Diagnostics;
 using Xunit;
 
 namespace AdventOfCode2022.Day3;
