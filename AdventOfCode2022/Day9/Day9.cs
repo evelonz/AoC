@@ -100,7 +100,7 @@ public class Test2022Day9
     }
 
     [Fact]
-    public void FirstProblemExamples2()
+    public void SecondProblemExamples()
     {
         var (_, partTwo) = Day9
             .Solve(new MockInputResolver(new string[] {
@@ -123,7 +123,6 @@ public class Test2022Day9
         var (partOne, partTwo) = Day9
             .Solve(new FileInputResolver(9));
 
-        // 1975 to high.
         partOne.Should().Be(6498);
         partTwo.Should().Be(2531);
     }
