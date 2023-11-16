@@ -208,7 +208,6 @@ public class Test2022Day8
         var (partOne, partTwo) = Day8
             .Solve(new FileInputResolver(8), 99);
 
-        // 1975 to high.
         partOne.Should().Be(1736);
         partTwo.Should().Be(268800);
     }

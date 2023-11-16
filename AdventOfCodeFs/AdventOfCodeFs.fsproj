@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Year2022\SolveDay1.fs" />
     <Compile Include="Utility.fs" />
     <Compile Include="Year2020\SolveDay1.fs" />
     <Compile Include="Year2020\SolveDay2.fs" />
@@ -34,6 +35,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Year2022\Files\" />
   </ItemGroup>
 
 </Project>
