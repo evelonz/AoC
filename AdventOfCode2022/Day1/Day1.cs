@@ -8,6 +8,19 @@ internal static class Day1
 {
     internal static (int partOne, int partTwo) Solve2(IInputResolver input)
     {
+        var aa = input.AsEnumerable()
+            .Aggregate(new List<int> { 0 }, (sum, current) => {
+                if (current.Length == 0)
+                {
+                    sum.Add(0);
+                }
+                else
+                {
+                    sum[^1] += int.Parse(current);
+                }
+                return sum;
+            });
+
         var a = input.AsEnumerable()
             //.Select(s => int.Parse(s))
             .Aggregate((new List<int>(), 0), (sum, current) => {
@@ -25,6 +38,10 @@ internal static class Day1
         var b = a.Item1.OrderByDescending(x => x);
         var po = b.First();
         var pt = b.Take(3).Sum();
+
+        var bb = aa.OrderByDescending(x => x);
+        var pob = bb.First();
+        var ptb = bb.Take(3).Sum();
 
         var c = input.AsEnumerable()
             .Select(s => s.Length == 0 ? 0 : int.Parse(s))
