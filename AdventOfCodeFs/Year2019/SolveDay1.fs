@@ -1,5 +1,5 @@
 ﻿#if COMPILED
-module AoC2
+module Year2019.Day1
 #endif
 
 // Shared

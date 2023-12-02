@@ -1,5 +1,5 @@
 ﻿#if COMPILED
-module Day2B
+module Year2019.DayOne.Day2B
 #endif
 
 open Xunit
