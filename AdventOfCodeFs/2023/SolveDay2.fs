@@ -3,6 +3,7 @@ module Year2023.Day2
 #endif
 open Xunit
 open FsUnit.Xunit
+open System.Text.RegularExpressions
 
 let input = System.IO.File.ReadLines($"""{__SOURCE_DIRECTORY__}\input2.txt""")
 
@@ -40,6 +41,16 @@ type Marble with
             | Blue x -> x
             | _ -> -1
 
+//let rx = Regex("((?:\d+ \w+)+)", RegexOptions.Compiled)
+//let parser2 (row: string) =
+//    let games = ((row.Split ':')[1]).Split ';'
+//    games
+//    |> Array.map (fun content ->
+//            let a = Regex.Matches(content, "((?:\d+ \w+)+)")
+//            a |> Seq.iter (fun (e) -> printfn "%A, " e.Value)
+//            a |> Seq.map
+//        )
+//parser2 "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
 let parseGame (row: string) = 
     let mutable allHands = []
     let games = ((row.Split ':')[1]).Split ';'

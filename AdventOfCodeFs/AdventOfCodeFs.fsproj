@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="2023\SolveDay3.fs" />
+    <Content Include="2023\input3.txt" />
     <Compile Include="2023\SolveDay2.fs" />
     <Content Include="2023\input2.txt" />
     <Compile Include="2023\SolveDay1.fs" />
