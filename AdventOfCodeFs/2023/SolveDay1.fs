@@ -37,16 +37,59 @@ let solve input =
 let findDigitAsString (str: string) compare =
     let low = str.IndexOf(snd compare:string)
     let high = str.LastIndexOf(snd compare:string)
-    seq {
-        yield (low, fst compare)
-        yield (high, fst compare)
+    match low, high with
+    | -1, -1 -> []
+    | -1, x -> [(x, fst compare + 1)]
+    | x, -1 -> [(x, fst compare + 1)]
+    | x, y -> [(x, fst compare + 1); (y, fst compare + 1)]
+
+findDigitAsString "one432onetow" (0, "one")
+let numbers = [ "one"; "two"; "three"; "four"; "five"; "six"; "seven"; "eight"; "nine" ] |> List.indexed
+//let prepedStringDigits = findDigitAsString numbers
+let toIndexedFromStringDigits s =
+    numbers |> List.map (findDigitAsString s) |> List.concat |> List.distinct
+
+let toIndexedFromIntChars input =
+    input
+    |> Seq.indexed
+    |> Seq.choose convertToIndexedInt
+
+let createCompleteDigit2 list1 list2 =
+    list1
+    |> List.append list2
+    |> createCompleteDigit
+
+let digitForEachRow2 input =
+    let fromIntegers = toIndexedFromIntChars input |> Seq.toList
+    let fromStringIntegers = toIndexedFromStringDigits input
+    printf "%A ->" input
+    let a = createCompleteDigit2 fromIntegers fromStringIntegers
+    printfn "%A" a
+    a
+
+let solve2 input =
+    input
+    |> Seq.map digitForEachRow2
+    |> Seq.sum
+
+let solve3 input =
+    input
+    |> Seq.map digitForEachRow2
+
+toIndexedFromStringDigits "4nineeightseven2"
+toIndexedFromIntChars "4nineeightseven2" |> Seq.toList
+
+let exampleData2 = seq {
+        yield "two1nine"
+        yield "eightwothree"
+        yield "abcone2threexyz"
+        yield "xtwone3four"
+        yield "4nineeightseven2"
+        yield "zoneight234"
+        yield "7pqrstsixteen"
     }
 
-findDigitAsString "one432onetow" (1, "one")
-let numbers = [ "one"; "two"; "three"; "four"; "five"; "six"; "seven"; "eight"; "nine" ] |> List.indexed
-//let toIndexed s =
-//    numbers
-//    |> List.map findDigitAsString s
+solve2 input
 
 let [<Fact>] ``part one individual rows``() =
     digitForEachRow "1abc2" |> should equal 12
