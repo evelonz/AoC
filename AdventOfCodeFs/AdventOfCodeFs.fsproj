@@ -16,6 +16,8 @@
     <Compile Include="2023\SolveDay13.fs" />
     <Content Include="2023\input11.txt" />
     <Compile Include="2023\SolveDay11.fs" />
+    <Content Include="2023\input10.txt" />
+    <Compile Include="2023\SolveDay10.fs" />
     <Content Include="2023\input9.txt" />
     <Compile Include="2023\SolveDay9.fs" />
     <Content Include="2023\input8.txt" />
