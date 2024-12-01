@@ -81,7 +81,7 @@ let colExpander size index (col, row) = if col > index then (col+size, row) else
 let expandRow = expander getMaxRow findGalaxyInRow
 let expandCol = expander getMaxCol findGalaxyInCol
 
-let solve2 delta input =
+let solve delta input =
     let map = parseInput input |> Seq.toList
     let map2 = expandRow (rowExpander delta) map
     let map3 = expandCol (colExpander delta) map2
@@ -89,16 +89,16 @@ let solve2 delta input =
     pairs |> List.map manhattenDistance |> List.map int64 |> List.sum
 
 let [<Fact>] ``part one examples``() =
-    solve2 1 exampleData1 |> should equal 374L
+    solve 1 exampleData1 |> should equal 374L
 
 let [<Fact>] ``part one solution``() =
-    solve2 1 input |> should equal 9724940L
+    solve 1 input |> should equal 9724940L
 
 let [<Fact>] ``part two examples``() =
     // 1 lower than expected because there is already an empty row/column.
-    solve2 (10-1) exampleData1 |> should equal 1030L
-    solve2 (100-1) exampleData1 |> should equal 8410L
+    solve (10-1) exampleData1 |> should equal 1030L
+    solve (100-1) exampleData1 |> should equal 8410L
 
 let [<Fact>] ``part two solution``() =
-    solve2 (1000000-1) input |> should equal 569052586852L
+    solve (1000000-1) input |> should equal 569052586852L
 
